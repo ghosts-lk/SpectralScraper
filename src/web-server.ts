@@ -3,6 +3,8 @@ import cors from 'cors';
 import * as path from 'path';
 import * as fs from 'fs';
 import { RealDataBatchScraper } from '../src/scraper-batch';
+import { ProfessionalLeadScraper, LeadFilters } from '../src/professional-lead-scraper';
+import { AdvancedQueryBuilder } from '../src/advanced-query-builder';
 import { getLogger } from '../src/utils/logger';
 
 const logger = getLogger('WebServer');
@@ -24,6 +26,7 @@ interface ScrapeJob {
   error?: string;
   startTime: number;
   endTime?: number;
+  filters?: LeadFilters;
 }
 
 const jobs: Map<string, ScrapeJob> = new Map();
@@ -33,7 +36,148 @@ function generateJobId(): string {
   return `job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
-// API: Get all jobs
+// Filter presets for common use cases
+const FILTER_PRESETS: Record<string, LeadFilters> = {
+  tech_ceos: {
+    industry: ['Technology', 'Software', 'SaaS'],
+    jobTitle: ['CEO', 'Founder', 'CTO'],
+    seniority: 'executive' as const,
+  },
+  venture_capital_ready: {
+    companySize: 'startup' as const,
+    industry: ['Technology', 'Biotech', 'FinTech'],
+  },
+  enterprise_decision_makers: {
+    companySize: 'enterprise' as const,
+    jobTitle: ['VP', 'Director', 'Manager'],
+    seniority: 'senior' as const,
+  },
+  sales_development: {
+    industry: ['Sales', 'Marketing', 'Business Development'],
+    jobTitle: ['SDR', 'AE', 'BDR', 'Sales Manager'],
+    seniority: 'mid' as const,
+  },
+  finance_decision_makers: {
+    industry: ['Finance', 'Banking', 'Insurance'],
+    jobTitle: ['CFO', 'Finance Director', 'Controller'],
+    seniority: 'executive' as const,
+  },
+};
+
+// ============ NEW FILTERING ENDPOINTS ============
+
+// API: Get filter presets
+app.get('/api/filters/presets', (req: Request, res: Response) => {
+  res.json({
+    presets: Object.keys(FILTER_PRESETS),
+    details: FILTER_PRESETS,
+  });
+});
+
+// API: Get specific preset
+app.get('/api/filters/presets/:name', (req: Request, res: Response) => {
+  const preset = FILTER_PRESETS[req.params.name as keyof typeof FILTER_PRESETS];
+  if (!preset) {
+    return res.status(404).json({ error: 'Preset not found' });
+  }
+  res.json(preset);
+});
+
+// API: Build queries from filters
+app.post('/api/filters/queries', (req: Request, res: Response) => {
+  const filters: LeadFilters = req.body;
+
+  try {
+    const builder = new AdvancedQueryBuilder(filters);
+    const queries = builder.getAllQueries();
+    const summary = builder.getFilterSummary();
+
+    res.json({
+      filters,
+      queries,
+      summary,
+    });
+  } catch (error) {
+    res.status(400).json({ error: String(error) });
+  }
+});
+
+// API: Validate filters
+app.post('/api/filters/validate', (req: Request, res: Response) => {
+  const filters: LeadFilters = req.body;
+  const errors: string[] = [];
+  const warnings: string[] = [];
+
+  if (filters.employeeCount) {
+    if (filters.employeeCount.min > filters.employeeCount.max) {
+      errors.push('Employee count min must be less than max');
+    }
+  }
+
+  if (filters.revenue) {
+    if (filters.revenue.min > filters.revenue.max) {
+      errors.push('Revenue min must be less than max');
+    }
+  }
+
+  if (filters.foundedYear) {
+    const currentYear = new Date().getFullYear();
+    if (filters.foundedYear.max > currentYear) {
+      warnings.push('Founded year max is in the future');
+    }
+  }
+
+  if (
+    !filters.location &&
+    !filters.industry &&
+    !filters.jobTitle &&
+    !filters.country
+  ) {
+    warnings.push('No filters specified - results may be very broad');
+  }
+
+  res.json({
+    valid: errors.length === 0,
+    errors,
+    warnings,
+  });
+});
+
+// API: Get data sources status
+app.get('/api/sources/status', (req: Request, res: Response) => {
+  const scraper = new ProfessionalLeadScraper();
+  const sources = scraper.getSourcesStatus();
+
+  res.json({
+    sources: sources.map(s => ({
+      name: s.name,
+      type: s.type,
+      enabled: s.enabled,
+      priority: s.priority,
+    })),
+    available: sources.filter(s => s.enabled).length,
+    total: sources.length,
+  });
+});
+
+// API: Set API credential
+app.post('/api/sources/:name/credential', (req: Request, res: Response) => {
+  const { apiKey } = req.body;
+  if (!apiKey) {
+    return res.status(400).json({ error: 'API key required' });
+  }
+
+  const scraper = new ProfessionalLeadScraper();
+  scraper.setApiCredential(req.params.name as string, apiKey as string);
+
+  res.json({
+    message: `Credential set for ${req.params.name}`,
+    source: req.params.name,
+  });
+});
+
+// ============ ORIGINAL ENDPOINTS (UPDATED) ============
+
 app.get('/api/jobs', (req: Request, res: Response) => {
   const jobList = Array.from(jobs.values()).sort((a, b) => b.startTime - a.startTime);
   res.json(jobList);
@@ -48,12 +192,13 @@ app.get('/api/jobs/:id', (req: Request, res: Response) => {
   res.json(job);
 });
 
-// API: Start scraping job
+// API: Start scraping job with optional filters
 app.post('/api/jobs/start', (req: Request, res: Response) => {
   const {
     leadCount = 1000,
     queries = ['tech startup CEO', 'software developer'],
     domains = ['github.com', 'techcrunch.com'],
+    filters = {} as LeadFilters,
   } = req.body;
 
   const jobId = generateJobId();
@@ -64,6 +209,7 @@ app.post('/api/jobs/start', (req: Request, res: Response) => {
     totalLeads: 0,
     targetLeads: leadCount,
     startTime: Date.now(),
+    filters,
   };
 
   jobs.set(jobId, job);
@@ -71,21 +217,34 @@ app.post('/api/jobs/start', (req: Request, res: Response) => {
   // Run scraper in background
   (async () => {
     try {
-      const scraper = new RealDataBatchScraper({
-        outputFile: `leads-${jobId}.csv`,
-        delayMs: 800,
-      });
+      // Use ProfessionalLeadScraper if filters provided, else RealDataBatchScraper
+      if (Object.keys(filters).length > 0) {
+        const scraper = new ProfessionalLeadScraper(filters);
+        const builder = new AdvancedQueryBuilder(filters);
+        const queryData = builder.getAllQueries();
 
-      // Note: In a real implementation, we'd need to modify RealDataBatchScraper
-      // to emit progress events. For now, we'll simulate it.
-      const startLeads = 0;
-      
-      await scraper.scrapeBatch(queries, domains, leadCount);
+        const leads = await scraper.scrape(
+          queryData.hunter,
+          queryData.clearbit,
+          queryData.apollo
+        );
+
+        job.csvFile = await scraper.exportCSV(leads, `leads-${jobId}`);
+        job.totalLeads = leads.length;
+      } else {
+        // Fallback to batch scraper
+        const batchScraper = new RealDataBatchScraper({
+          outputFile: `leads-${jobId}.csv`,
+          delayMs: 800,
+        });
+
+        await batchScraper.scrapeBatch(queries, domains, leadCount);
+        job.csvFile = `leads-${jobId}.csv`;
+        job.totalLeads = leadCount;
+      }
 
       job.status = 'completed';
       job.endTime = Date.now();
-      job.csvFile = `leads-${jobId}.csv`;
-      job.totalLeads = leadCount; // Simulated for demo
     } catch (error) {
       job.status = 'failed';
       job.error = String(error);
