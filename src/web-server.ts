@@ -2,10 +2,10 @@ import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import * as path from 'path';
 import * as fs from 'fs';
-import { RealDataBatchScraper } from '../src/scraper-batch';
-import { ProfessionalLeadScraper, LeadFilters } from '../src/professional-lead-scraper';
-import { AdvancedQueryBuilder } from '../src/advanced-query-builder';
-import { getLogger } from '../src/utils/logger';
+import { RealDataBatchScraper } from './scraper-batch';
+import { ProfessionalLeadScraper, LeadFilters } from './professional-lead-scraper';
+import { AdvancedQueryBuilder } from './advanced-query-builder';
+import { getLogger } from './utils/logger';
 
 const logger = getLogger('WebServer');
 const app: Express = express();
