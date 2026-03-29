@@ -3,37 +3,196 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spectral Scraper - Enterprise Lead Platform</title>
+  <title>Spectral Scraper - Lead Generation</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/recharts@2/dist/Recharts.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-    .gradient-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-    .card-hover { transition: all 0.3s ease; }
-    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-    .progress-bar { background: linear-gradient(90deg, #667eea, #764ba2); }
-    .metric { font-size: 2.5rem; font-weight: 700; }
-    .stat-card { border-left: 4px solid #667eea; }
+    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .source-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+    }
+    .source-btn {
+      padding: 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .source-btn:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+    .source-btn.active {
+      border-color: #667eea;
+      background: #667eea;
+      color: white;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    .stat-box {
+      background: white;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .stat-label {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #667eea;
+    }
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      font-size: 15px;
+    }
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+    .btn-secondary:hover {
+      background: #d1d5db;
+    }
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .lead-card {
+      background: white;
+      padding: 16px;
+      border-radius: 6px;
+      border-left: 4px solid #667eea;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .grade-a { background: #dcfce7; color: #166534; }
+    .grade-b { background: #dbeafe; color: #1e40af; }
+    .grade-c { background: #fef3c7; color: #92400e; }
+    .grade-d { background: #fed7aa; color: #9a3412; }
+    .grade-f { background: #fecaca; color: #991b1b; }
+    .file-input { display: none; }
+    .file-label {
+      padding: 10px 16px;
+      background: #e5e7eb;
+      color: #374151;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+    .file-label:hover {
+      background: #d1d5db;
+    }
+    .tab-nav {
+      border-bottom: 2px solid #e5e7eb;
+      display: flex;
+      gap: 0;
+    }
+    .tab-btn {
+      padding: 12px 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      color: #6b7280;
+    }
+    .tab-btn:hover {
+      color: #667eea;
+    }
+    .tab-btn.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      color: #6b7280;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .dark-bg { background-color: #f9fafb; }
   </style>
 </head>
 <body class="bg-gray-50">
   <div id="app"></div>
 
   <script type="module">
-    // Real-time dashboard application
     const API_BASE = 'http://localhost:3000/api';
 
-    class Dashboard {
+    const SOURCES = [
+      { id: 'linkedin', name: 'LinkedIn', emoji: '💼' },
+      { id: 'crunchbase', name: 'Crunchbase', emoji: '🔍' },
+      { id: 'companies', name: 'Company Sites', emoji: '🌐' },
+      { id: 'emails', name: 'Email DB', emoji: '✉️' },
+      { id: 'github', name: 'GitHub', emoji: '🐙' },
+      { id: 'twitter', name: 'Twitter', emoji: '𝕏' },
+    ];
+
+    class App {
       constructor() {
         this.stats = { total_leads: 0, verified_leads: 0, avg_score: 0, unique_companies: 0 };
         this.leads = [];
-        this.operations = [];
+        this.selectedSources = ['linkedin'];
+        this.activeTab = 'home';
         this.init();
       }
 
-      async init() {
+      init() {
         this.render();
+        this.attachEvents();
         this.loadStats();
         this.loadLeads();
         setInterval(() => this.loadStats(), 5000);
@@ -43,103 +202,149 @@
       async loadStats() {
         try {
           const res = await fetch(`${API_BASE}/bulk/stats/global`);
-          const data = await res.json();
-          this.stats = data;
-          this.updateStatsUI();
+          if (res.ok) {
+            this.stats = await res.json();
+            this.updateStats();
+          }
         } catch (e) {
-          console.error('Failed to load stats:', e);
+          console.error('Load stats error:', e);
         }
       }
 
       async loadLeads() {
         try {
-          const res = await fetch(`${API_BASE}/leads?limit=100`);
-          const data = await res.json();
-          this.leads = data.leads || [];
-          this.updateLeadsUI();
+          const res = await fetch(`${API_BASE}/leads?limit=20`);
+          if (res.ok) {
+            const data = await res.json();
+            this.leads = data.leads || [];
+            this.updateLeads();
+          }
         } catch (e) {
-          console.error('Failed to load leads:', e);
+          console.error('Load leads error:', e);
         }
       }
 
-      async bulkImport() {
-        const file = document.getElementById('csvFile').files[0];
-        if (!file) return alert('Select a CSV file');
+      toggleSource(id) {
+        const idx = this.selectedSources.indexOf(id);
+        if (idx > -1) {
+          this.selectedSources.splice(idx, 1);
+        } else {
+          this.selectedSources.push(id);
+        }
+        this.updateSourceButtons();
+      }
+
+      updateSourceButtons() {
+        SOURCES.forEach(src => {
+          const btn = document.querySelector(`[data-src="${src.id}"]`);
+          if (btn) {
+            if (this.selectedSources.includes(src.id)) {
+              btn.classList.add('active');
+            } else {
+              btn.classList.remove('active');
+            }
+          }
+        });
+      }
+
+      async launchScraper() {
+        if (this.selectedSources.length === 0) {
+          alert('Please select at least one data source');
+          return;
+        }
+        const sources = this.selectedSources.map(id => {
+          const src = SOURCES.find(s => s.id === id);
+          return src ? src.name : id;
+        }).join(', ');
+        alert(`🚀 Starting scraper with:\n${sources}`);
+      }
+
+      async importCSV() {
+        const input = document.getElementById('csvFile');
+        const file = input?.files[0];
+        if (!file) {
+          alert('Please select a CSV file');
+          return;
+        }
 
         const formData = new FormData();
         formData.append('file', file);
 
         try {
-          const res = await fetch(`${API_BASE}/import/csv`, { method: 'POST', body: formData });
-          const data = await res.json();
-          alert(`✓ Started import: ${data.operationId}`);
-          this.loadStats();
+          const res = await fetch(`${API_BASE}/import/csv`, {
+            method: 'POST',
+            body: formData
+          });
+          if (res.ok) {
+            alert('✓ CSV imported successfully');
+            this.loadStats();
+            input.value = '';
+            document.getElementById('file-label').textContent = '📁 Choose CSV File';
+          } else {
+            alert('Import failed');
+          }
         } catch (e) {
-          alert(`❌ Import failed: ${e.message}`);
+          alert(`Error: ${e.message}`);
         }
       }
 
-      async bulkScore() {
+      async scoreAll() {
         try {
-          const res = await fetch(`${API_BASE}/score/bulk`, { method: 'POST', body: JSON.stringify({ limit: 1000 }) });
-          const data = await res.json();
-          alert(`✓ Scoring started: ${data.operationId}`);
+          const res = await fetch(`${API_BASE}/score/bulk`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ limit: 1000 })
+          });
+          if (res.ok) {
+            alert('✓ Scoring batch started');
+          }
         } catch (e) {
-          alert(`❌ Scoring failed: ${e.message}`);
+          alert(`Error: ${e.message}`);
         }
       }
 
-      updateStatsUI() {
-        const statsHtml = `
-          <div class="grid grid-cols-4 gap-4 mb-8">
-            <div class="stat-card bg-white p-6 rounded-lg shadow">
-              <p class="text-gray-600 text-sm mb-2">Total Leads</p>
-              <p class="metric">${this.formatNumber(this.stats.total_leads)}</p>
-            </div>
-            <div class="stat-card bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
-              <p class="text-gray-600 text-sm mb-2">Verified</p>
-              <p class="metric text-green-600">${this.formatNumber(this.stats.verified_leads)}</p>
-            </div>
-            <div class="stat-card bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
-              <p class="text-gray-600 text-sm mb-2">Avg Score</p>
-              <p class="metric text-blue-600">${(this.stats.avg_score || 0).toFixed(1)}/100</p>
-            </div>
-            <div class="stat-card bg-white p-6 rounded-lg shadow border-l-4 border-purple-500">
-              <p class="text-gray-600 text-sm mb-2">Companies</p>
-              <p class="metric text-purple-600">${this.formatNumber(this.stats.unique_companies)}</p>
-            </div>
+      updateStats() {
+        const container = document.getElementById('stats-grid');
+        if (!container) return;
+        
+        container.innerHTML = `
+          <div class="stat-box">
+            <div class="stat-label">Total Leads</div>
+            <div class="stat-value">${this.formatNumber(this.stats.total_leads)}</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Verified</div>
+            <div class="stat-value" style="color: #10b981;">${this.formatNumber(this.stats.verified_leads)}</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Avg Score</div>
+            <div class="stat-value" style="color: #f59e0b;">${(this.stats.avg_score || 0).toFixed(1)}/100</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Companies</div>
+            <div class="stat-value" style="color: #8b5cf6;">${this.formatNumber(this.stats.unique_companies)}</div>
           </div>
         `;
-        const container = document.getElementById('stats');
-        if (container) container.innerHTML = statsHtml;
       }
 
-      updateLeadsUI() {
-        const leadsHtml = `
-          <div class="space-y-3 max-h-96 overflow-y-auto">
-            ${this.leads.map(lead => `
-              <div class="bg-white p-4 rounded border border-gray-200 flex justify-between items-center">
-                <div>
-                  <p class="font-semibold">${lead.name || 'Unknown'}</p>
-                  <p class="text-sm text-gray-600">${lead.title} @ ${lead.company}</p>
-                  <p class="text-xs text-gray-400">${lead.email}</p>
-                </div>
-                <div class="text-right">
-                  <span class="inline-block bg-${this.getGradeColor(lead.grade)}-100 text-${this.getGradeColor(lead.grade)}-800 px-3 py-1 rounded-full text-sm font-medium">
-                    ${lead.score || 0}/100 [${lead.grade || 'N/A'}]
-                  </span>
-                </div>
+      updateLeads() {
+        const container = document.getElementById('leads-grid');
+        if (!container) return;
+
+        container.innerHTML = this.leads.length > 0 ? 
+          this.leads.map(lead => `
+            <div class="lead-card">
+              <div class="flex-1">
+                <p style="font-weight: 600; color: #111827;">${lead.name || 'Unknown'}</p>
+                <p style="font-size: 14px; color: #6b7280; margin-top: 4px;">${lead.title || 'N/A'} @ ${lead.company || 'N/A'}</p>
+                <p style="font-size: 13px; color: #9ca3af; margin-top: 2px;">${lead.email}</p>
               </div>
-            `).join('')}
-          </div>
-        `;
-        const container = document.getElementById('leads-list');
-        if (container) container.innerHTML = leadsHtml;
-      }
-
-      getGradeColor(grade) {
-        const colors = { 'A': 'green', 'B': 'blue', 'C': 'yellow', 'D': 'orange', 'F': 'red' };
-        return colors[grade] || 'gray';
+              <span class="grade-badge grade-${(lead.grade || 'F').toLowerCase()}">
+                ${lead.score || 0} / ${lead.grade || 'F'}
+              </span>
+            </div>
+          `).join('') :
+          '<div style="text-align: center; color: #9ca3af; padding: 32px;">No leads yet</div>';
       }
 
       formatNumber(n) {
@@ -148,74 +353,139 @@
         return n.toString();
       }
 
+      setTab(tab) {
+        this.activeTab = tab;
+        this.render();
+      }
+
+      attachEvents() {
+        SOURCES.forEach(src => {
+          const btn = document.querySelector(`[data-src="${src.id}"]`);
+          if (btn) {
+            btn.addEventListener('click', () => this.toggleSource(src.id));
+          }
+        });
+
+        const launchBtn = document.getElementById('launch-btn');
+        if (launchBtn) launchBtn.addEventListener('click', () => this.launchScraper());
+
+        const scoreBtn = document.getElementById('score-btn');
+        if (scoreBtn) scoreBtn.addEventListener('click', () => this.scoreAll());
+
+        const fileLabel = document.getElementById('file-label');
+        if (fileLabel) fileLabel.addEventListener('click', () => document.getElementById('csvFile').click());
+
+        const csvFile = document.getElementById('csvFile');
+        if (csvFile) {
+          csvFile.addEventListener('change', (e) => {
+            if (fileLabel && e.target.files[0]) {
+              fileLabel.textContent = e.target.files[0].name;
+            }
+          });
+        }
+
+        const importBtn = document.getElementById('import-btn');
+        if (importBtn) importBtn.addEventListener('click', () => this.importCSV());
+
+        const tabs = document.querySelectorAll('.tab-btn');
+        tabs.forEach(tab => {
+          tab.addEventListener('click', () => this.setTab(tab.dataset.tab));
+        });
+      }
+
       render() {
+        const homeTab = this.activeTab === 'home';
+        const leadsTab = this.activeTab === 'leads';
+
         document.getElementById('app').innerHTML = `
-          <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+          <div class="min-h-screen bg-gray-50">
             <!-- Header -->
-            <div class="gradient-primary text-white py-8 px-8 shadow-lg">
-              <div class="max-w-7xl mx-auto">
-                <h1 class="text-4xl font-bold mb-2">🚀 Spectral Scraper</h1>
-                <p class="text-lg opacity-90">Enterprise Lead Generation & Scoring Platform</p>
+            <div class="header text-white py-6 px-8 shadow">
+              <div style="max-width: 1200px; margin: 0 auto;">
+                <h1 style="font-size: 28px; font-weight: 700;">🚀 Spectral Scraper</h1>
+                <p style="font-size: 15px; opacity: 0.9; margin-top: 4px;">Professional Lead Generation Platform</p>
               </div>
             </div>
 
-            <!-- Main Content -->
-            <div class="max-w-7xl mx-auto px-8 py-10">
-              <!-- Statistics -->
-              <div id="stats"></div>
-
-              <!-- Operations Panel -->
-              <div class="grid grid-cols-2 gap-6 mb-8">
-                <!-- Bulk Import -->
-                <div class="card-hover bg-white p-6 rounded-lg shadow">
-                  <h2 class="text-xl font-bold mb-4">📥 Bulk Import</h2>
-                  <input type="file" id="csvFile" accept=".csv" class="w-full mb-4 p-2 border border-gray-300 rounded">
-                  <button onclick="window.dashboard.bulkImport()" class="w-full gradient-primary text-white py-2 rounded font-semibold hover:opacity-90">
-                    Import CSV
-                  </button>
-                  <p class="text-xs text-gray-500 mt-2">Supports: CSV with Name, Email, Phone, Title, Company</p>
+            <!-- Navigation -->
+            <div style="background: white; border-bottom: 2px solid #e5e7eb; position: sticky; top: 0; z-index: 10;">
+              <div style="max-width: 1200px; margin: 0 auto; padding: 0 32px;">
+                <div class="tab-nav">
+                  <button class="tab-btn ${homeTab ? 'active' : ''}" data-tab="home">🏠 Home</button>
+                  <button class="tab-btn ${leadsTab ? 'active' : ''}" data-tab="leads">👥 Leads</button>
                 </div>
+              </div>
+            </div>
 
-                <!-- Bulk Operations -->
-                <div class="card-hover bg-white p-6 rounded-lg shadow">
-                  <h2 class="text-xl font-bold mb-4">⚙️ Bulk Operations</h2>
-                  <div class="space-y-2">
-                    <button onclick="window.dashboard.bulkScore()" class="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700">
-                      Score All Leads
+            <!-- Content -->
+            <div style="max-width: 1200px; margin: 0 auto; padding: 40px 32px;">
+              ${homeTab ? `
+                <!-- HOME TAB -->
+                <div style="space-y: 32px;">
+                  <!-- Stats -->
+                  <div>
+                    <h2 class="section-title">📊 Statistics</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 40px;">
+                      <div id="stats-grid"></div>
+                    </div>
+                  </div>
+
+                  <!-- Data Sources -->
+                  <div style="margin-bottom: 40px;">
+                    <h2 class="section-title">📍 Choose Data Sources</h2>
+                    <p class="section-desc">Select one or more data sources to scrape leads from:</p>
+                    <div class="source-grid" style="margin-bottom: 20px;">
+                      ${SOURCES.map(src => `
+                        <button class="source-btn ${this.selectedSources.includes(src.id) ? 'active' : ''}" 
+                                data-src="${src.id}">
+                          <div style="font-size: 24px; margin-bottom: 8px;">${src.emoji}</div>
+                          <div>${src.name}</div>
+                        </button>
+                      `).join('')}
+                    </div>
+                    <button id="launch-btn" class="btn btn-primary" style="padding: 14px 32px; font-size: 16px;">
+                      🚀 Launch Scraper
                     </button>
-                    <button class="w-full bg-green-600 text-white py-2 rounded font-semibold hover:bg-green-700">
-                      Verify All
-                    </button>
-                    <button class="w-full bg-purple-600 text-white py-2 rounded font-semibold hover:bg-purple-700">
-                      Sync to CRM
+                  </div>
+
+                  <!-- CSV Import -->
+                  <div class="card" style="margin-bottom: 40px;">
+                    <h3 class="section-title" style="margin-bottom: 16px;">📤 Import CSV Data</h3>
+                    <p class="section-desc" style="margin-bottom: 16px;">Upload a CSV file with your leads for scoring and analysis:</p>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                      <label id="file-label" class="file-label">📁 Choose CSV File</label>
+                      <input type="file" id="csvFile" class="file-input" accept=".csv">
+                      <button id="import-btn" class="btn btn-secondary">Import</button>
+                    </div>
+                  </div>
+
+                  <!-- Quick Actions -->
+                  <div class="card">
+                    <h3 class="section-title" style="margin-bottom: 16px;">⚡ Quick Actions</h3>
+                    <button id="score-btn" class="btn btn-secondary">
+                      🎯 Score All Leads
                     </button>
                   </div>
                 </div>
-              </div>
-
-              <!-- Recent Leads -->
-              <div class="bg-white rounded-lg shadow p-6 mb-8">
-                <h2 class="text-xl font-bold mb-4">👥 Top Recent Leads</h2>
-                <div id="leads-list"></div>
-              </div>
-
-              <!-- Footer -->
-              <div class="text-center text-gray-400 text-sm py-8 border-t border-gray-700">
-                <p>Spectral Scraper v1.0 | Built for enterprise scale | Real-time processing</p>
-              </div>
+              ` : `
+                <!-- LEADS TAB -->
+                <div>
+                  <h2 class="section-title">👥 Recent Leads</h2>
+                  <div id="leads-grid"></div>
+                </div>
+              `}
             </div>
           </div>
         `;
 
-        // Attach dashboard instance for global access
-        window.dashboard = this;
-        this.updateStatsUI();
-        this.updateLeadsUI();
+        this.attachEvents();
+        this.updateSourceButtons();
+        this.updateStats();
+        if (leadsTab) this.updateLeads();
       }
     }
 
-    // Initialize dashboard
-    new Dashboard();
+    window.app = new App();
   </script>
 </body>
 </html>
