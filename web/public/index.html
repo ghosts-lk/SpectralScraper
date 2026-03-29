@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpectralScraper - AI Lead Generation</title>
+  <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+      padding: 40px 0;
+    }
+
+    .header h1 {
+      font-size: 3em;
+      font-weight: 800;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .header p {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 768px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+    }
+
+    .card h2 {
+      font-size: 1.5em;
+      color: #333;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card i {
+      color: #667eea;
+      font-size: 1.8em;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 1em;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+      font-family: monospace;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1em;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .btn-small {
+      padding: 8px 16px;
+      font-size: 0.9em;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .stat-box {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2em;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 0.9em;
+      opacity: 0.9;
+    }
+
+    .jobs-list {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .job-item {
+      background: #f8f8f8;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      border-left: 4px solid #667eea;
+    }
+
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .job-id {
+      font-weight: 600;
+      color: #333;
+      font-family: monospace;
+      font-size: 0.9em;
+    }
+
+    .job-status {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 600;
+    }
+
+    .status-running {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status-completed {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-failed {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .job-progress {
+      width: 100%;
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .job-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      transition: width 0.3s ease;
+    }
+
+    .job-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9em;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .job-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 3px solid rgba(102, 126, 234, 0.3);
+      border-radius: 50%;
+      border-top-color: #667eea;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .alert {
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border-left: 4px solid #17a2b8;
+    }
+
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border-left: 4px solid #28a745;
+    }
+
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border-left: 4px solid #dc3545;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-weight: 600;
+      color: #999;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .code-block {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 15px;
+      overflow-x: auto;
+      font-family: monospace;
+      font-size: 0.9em;
+      color: #333;
+    }
+
+    .feature-list {
+      list-style: none;
+    }
+
+    .feature-list li {
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #555;
+    }
+
+    .feature-list i {
+      color: #667eea;
+      font-size: 1.3em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>🌍 SpectralScraper</h1>
+      <p>AI-Powered Lead Generation & Web Scraping Platform</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-grid">
+      <!-- New Job Card -->
+      <div class="card">
+        <h2><i class="ri-search-cloud-line"></i> Start New Scrape</h2>
+        
+        <div class="form-group">
+          <label>Target Lead Count</label>
+          <input type="number" id="leadCount" value="5000" min="100" max="1000000">
+        </div>
+
+        <div class="form-group">
+          <label>Search Queries (one per line)</label>
+          <textarea id="queries" placeholder="tech startup CEO&#10;software engineer&#10;business development">tech startup CEO
+software engineer
+business development</textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Domains (one per line)</label>
+          <textarea id="domains" placeholder="github.com&#10;techcrunch.com&#10;producthunt.com">github.com
+techcrunch.com
+producthunt.com</textarea>
+        </div>
+
+        <button class="btn btn-primary" onclick="startScrape()">
+          <i class="ri-play-circle-line"></i> Start Scraping
+        </button>
+      </div>
+
+      <!-- Statistics Card -->
+      <div class="card">
+        <h2><i class="ri-bar-chart-line"></i> Statistics</h2>
+        
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-box">
+            <div class="stat-value" id="totalJobs">0</div>
+            <div class="stat-label">Total Jobs</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="completedJobs">0</div>
+            <div class="stat-label">Completed</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="leadsScraped">0</div>
+            <div class="stat-label">Leads Scraped</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="avgLeads">0</div>
+            <div class="stat-label">Avg per Job</div>
+          </div>
+        </div>
+
+        <div id="alerts"></div>
+      </div>
+    </div>
+
+    <!-- Jobs Section -->
+    <div class="card">
+      <h2><i class="ri-list-check-2"></i> Recent Jobs</h2>
+
+      <div class="tabs">
+        <button class="tab active" onclick="filterJobs('all')">All</button>
+        <button class="tab" onclick="filterJobs('running')">Running</button>
+        <button class="tab" onclick="filterJobs('completed')">Completed</button>
+      </div>
+
+      <div class="jobs-list" id="jobsList">
+        <p style="color: #999; text-align: center; padding: 40px 20px;">
+          <i class="ri-inbox-line" style="font-size: 3em; display: block; margin-bottom: 10px;"></i>
+          No scraping jobs yet. Start a new scrape to see results here.
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align: center; color: white; margin-top: 50px; padding: 20px;">
+      <p>🚀 SpectralScraper v1.0.0 | Real-time Lead Generation</p>
+      <p style="font-size: 0.9em; opacity: 0.8;">Built with ❤️ by Ghost Protocol</p>
+    </div>
+  </div>
+
+  <script>
+    let currentFilter = 'all';
+
+    // Start scraping
+    async function startScrape() {
+      const leadCount = parseInt(document.getElementById('leadCount').value);
+      const queries = document.getElementById('queries').value.split('\n').filter(q => q.trim());
+      const domains = document.getElementById('domains').value.split('\n').filter(d => d.trim());
+
+      if (!leadCount || queries.length === 0 || domains.length === 0) {
+        showAlert('Please fill in all fields', 'error');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/jobs/start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ leadCount, queries, domains }),
+        });
+
+        const job = await response.json();
+        showAlert(`Scraping job started: ${job.id}`, 'success');
+        loadJobs();
+        
+        // Poll for updates
+        pollJobStatus(job.id);
+      } catch (error) {
+        showAlert(`Error: ${error.message}`, 'error');
+      }
+    }
+
+    // Poll job status
+    async function pollJobStatus(jobId, interval = 2000) {
+      const maxAttempts = 300; // 10 minutes max
+      let attempts = 0;
+
+      const timer = setInterval(async () => {
+        attempts++;
+        try {
+          const response = await fetch(`/api/jobs/${jobId}`);
+          const job = await response.json();
+
+          if (job.status === 'completed' || job.status === 'failed' || attempts >= maxAttempts) {
+            clearInterval(timer);
+          }
+
+          loadJobs();
+          loadStats();
+        } catch (error) {
+          console.error('Polling error:', error);
+        }
+      }, interval);
+    }
+
+    // Load jobs list
+    async function loadJobs() {
+      try {
+        const response = await fetch('/api/jobs');
+        const jobs = await response.json();
+
+        const filtered = jobs.filter(job => {
+          if (currentFilter === 'all') return true;
+          return job.status === currentFilter;
+        });
+
+        if (filtered.length === 0) {
+          document.getElementById('jobsList').innerHTML = `
+            <p style="color: #999; text-align: center; padding: 40px 20px;">
+              <i class="ri-inbox-line" style="font-size: 3em; display: block; margin-bottom: 10px;"></i>
+              No ${currentFilter === 'all' ? '' : currentFilter} jobs found
+            </p>
+          `;
+          return;
+        }
+
+        document.getElementById('jobsList').innerHTML = filtered.map(job => `
+          <div class="job-item">
+            <div class="job-header">
+              <div class="job-id">ID: ${job.id.substring(0, 20)}...</div>
+              <span class="job-status status-${job.status}">
+                ${job.status.toUpperCase()}
+              </span>
+            </div>
+            <div class="job-progress">
+              <div class="job-progress-bar" style="width: ${job.progress}%"></div>
+            </div>
+            <div class="job-info">
+              <span>📊 ${job.totalLeads} / ${job.targetLeads} leads</span>
+              <span>⏱️ ${formatDuration(job.endTime - job.startTime || Date.now() - job.startTime)}</span>
+            </div>
+            <div class="job-actions">
+              ${job.csvFile ? `
+                <button class="btn btn-secondary btn-small" onclick="downloadCSV('${job.id}')">
+                  <i class="ri-download-line"></i> Download
+                </button>
+              ` : ''}
+              <button class="btn btn-secondary btn-small" onclick="refreshJobs()">
+                <i class="ri-refresh-line"></i> Refresh
+              </button>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Error loading jobs:', error);
+      }
+    }
+
+    // Load statistics
+    async function loadStats() {
+      try {
+        const response = await fetch('/api/stats');
+        const stats = await response.json();
+
+        document.getElementById('totalJobs').textContent = stats.totalJobs;
+        document.getElementById('completedJobs').textContent = stats.completedJobs;
+        document.getElementById('leadsScraped').textContent = stats.totalLeadsScraped.toLocaleString();
+        document.getElementById('avgLeads').textContent = Math.round(stats.averageLeadsPerJob).toLocaleString();
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
+    }
+
+    // Download CSV
+    function downloadCSV(jobId) {
+      window.location.href = `/api/jobs/${jobId}/download`;
+    }
+
+    // Filter jobs
+    function filterJobs(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      loadJobs();
+    }
+
+    // Show alert
+    function showAlert(message, type) {
+      const alerts = document.getElementById('alerts');
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type}`;
+      alertDiv.innerHTML = `
+        <i class="ri-${type === 'success' ? 'check-line' : type === 'error' ? 'alert-line' : 'info-line'}"></i>
+        ${message}
+      `;
+      alerts.appendChild(alertDiv);
+
+      setTimeout(() => alertDiv.remove(), 5000);
+    }
+
+    // Format duration
+    function formatDuration(ms) {
+      if (ms < 1000) return '<1s';
+      const seconds = Math.floor(ms / 1000);
+      if (seconds < 60) return `${seconds}s`;
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return `${minutes}m ${seconds % 60}s`;
+      const hours = Math.floor(minutes / 60);
+      return `${hours}h ${minutes % 60}m`;
+    }
+
+    // Refresh jobs
+    function refreshJobs() {
+      loadJobs();
+    }
+
+    // Initial load
+    loadJobs();
+    loadStats();
+
+    // Auto-refresh every 3 seconds
+    setInterval(() => {
+      loadJobs();
+      loadStats();
+    }, 3000);
+  </script>
+</body>
+</html>
