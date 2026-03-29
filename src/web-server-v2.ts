@@ -90,7 +90,7 @@ async function initServer() {
     // ============ BULK OPERATIONS ============
 
     // POST /api/import/csv - CSV import with streaming
-    app.post('/api/import/csv', async (req: Request, res: Response) => {
+    app.post('/api/import/csv', async (req: any, res: Response) => {
       try {
         if (!req.files || !req.files.file) {
           return res.status(400).json({ error: 'No file provided' });

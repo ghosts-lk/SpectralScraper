@@ -374,7 +374,7 @@
       ],
       locations: [
         'United States', 'Canada', 'United Kingdom', 'Germany', 'France', 'Australia',
-        'Japan', 'India', 'Singapore', 'Brazil', 'Mexico', 'Europe', 'Asia-Pacific'
+        'Japan', 'India', 'Sri Lanka', 'Singapore', 'Brazil', 'Mexico', 'Europe', 'Asia-Pacific'
       ],
       technologies: [
         'AWS', 'Azure', 'Google Cloud', 'Salesforce', 'HubSpot', 'Slack', 'Zendesk',
@@ -887,7 +887,7 @@
           FILTER_CONFIG[category].forEach(option => {
             const checkbox = document.querySelector(`[data-filter="${category}-${option}"]`);
             if (checkbox) {
-              checkbox.checked = this.selectedFilters[category].includes(option);
+              checkbox.checked = this.selectedFilters[category] && this.selectedFilters[category].includes(option);
             }
           });
         });
@@ -936,6 +936,17 @@
         });
 
         document.getElementById('clear-filters-btn')?.addEventListener('click', () => this.clearAllFilters());
+      }
+
+      // Generate filter HTML helper
+      generateFilterHTML(category) {
+        const options = FILTER_CONFIG[category] || [];
+        return options.map(option => `
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+            <input type="checkbox" data-filter="${category}-${option}" data-category="${category}" data-value="${option}" style="cursor: pointer;">
+            <span>${option}</span>
+          </label>
+        `).join('');
       }
 
       render() {
@@ -1029,14 +1040,7 @@
                           <span style="font-size: 18px;">👔</span>
                           Job Titles
                         </div>
-                        <div class="filter-options">
-                          ${FILTER_CONFIG.jobTitles.map(title => `
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
-                              <input type="checkbox" data-filter="jobTitles-${title}" data-category="jobTitles" data-value="${title}" style="cursor: pointer;">
-                              <span>${title}</span>
-                            </label>
-                          `).join('')}
-                        </div>
+                        <div class="filter-options" id="filter-jobTitles"></div>
                       </div>
 
                       <!-- Seniority Level -->
@@ -1045,14 +1049,7 @@
                           <span style="font-size: 18px;">📈</span>
                           Seniority
                         </div>
-                        <div class="filter-options">
-                          ${FILTER_CONFIG.seniority.map(level => `
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
-                              <input type="checkbox" data-filter="seniority-${level}" data-category="seniority" data-value="${level}" style="cursor: pointer;">
-                              <span>${level}</span>
-                            </label>
-                          `).join('')}
-                        </div>
+                        <div class="filter-options" id="filter-seniority"></div>
                       </div>
 
                       <!-- Company Size -->
@@ -1061,14 +1058,7 @@
                           <span style="font-size: 18px;">🏢</span>
                           Company Size
                         </div>
-                        <div class="filter-options">
-                          ${FILTER_CONFIG.companySize.map(size => `
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
-                              <input type="checkbox" data-filter="companySize-${size}" data-category="companySize" data-value="${size}" style="cursor: pointer;">
-                              <span>${size}</span>
-                            </label>
-                          `).join('')}
-                        </div>
+                        <div class="filter-options" id="filter-companySize"></div>
                       </div>
 
                       <!-- Industries -->
@@ -1077,14 +1067,7 @@
                           <span style="font-size: 18px;">🏭</span>
                           Industries
                         </div>
-                        <div class="filter-options">
-                          ${FILTER_CONFIG.industries.map(industry => `
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
-                              <input type="checkbox" data-filter="industries-${industry}" data-category="industries" data-value="${industry}" style="cursor: pointer;">
-                              <span>${industry}</span>
-                            </label>
-                          `).join('')}
-                        </div>
+                        <div class="filter-options" id="filter-industries"></div>
                       </div>
 
                       <!-- Company Type -->
@@ -1093,14 +1076,7 @@
                           <span style="font-size: 18px;">🏛️</span>
                           Company Type
                         </div>
-                        <div class="filter-options">
-                          ${FILTER_CONFIG.companyType.map(type => `
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
-                              <input type="checkbox" data-filter="companyType-${type}" data-category="companyType" data-value="${type}" style="cursor: pointer;">
-                              <span>${type}</span>
-                            </label>
-                          `).join('')}
-                        </div>
+                        <div class="filter-options" id="filter-companyType"></div>
                       </div>
 
                       <!-- Funding Stage -->
@@ -1109,14 +1085,7 @@
                           <span style="font-size: 18px;">💎</span>
                           Funding Stage
                         </div>
-                        <div class="filter-options">
-                          ${FILTER_CONFIG.fundingStage.map(stage => `
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
-                              <input type="checkbox" data-filter="fundingStage-${stage}" data-category="fundingStage" data-value="${stage}" style="cursor: pointer;">
-                              <span>${stage}</span>
-                            </label>
-                          `).join('')}
-                        </div>
+                        <div class="filter-options" id="filter-fundingStage"></div>
                       </div>
                     </div>
 
@@ -1134,14 +1103,7 @@
                               <span style="font-size: 18px;">🌍</span>
                               Locations
                             </div>
-                            <div class="filter-options">
-                              ${FILTER_CONFIG.locations.map(loc => `
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
-                                  <input type="checkbox" data-filter="locations-${loc}" data-category="locations" data-value="${loc}" style="cursor: pointer;">
-                                  <span>${loc}</span>
-                                </label>
-                              `).join('')}
-                            </div>
+                            <div class="filter-options" id="filter-locations"></div>
                           </div>
 
                           <!-- Technologies -->
@@ -1150,14 +1112,7 @@
                               <span style="font-size: 18px;">💻</span>
                               Technologies
                             </div>
-                            <div class="filter-options">
-                              ${FILTER_CONFIG.technologies.map(tech => `
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
-                                  <input type="checkbox" data-filter="technologies-${tech}" data-category="technologies" data-value="${tech}" style="cursor: pointer;">
-                                  <span>${tech}</span>
-                                </label>
-                              `).join('')}
-                            </div>
+                            <div class="filter-options" id="filter-technologies"></div>
                           </div>
                         </div>
                       </details>
@@ -1202,9 +1157,29 @@
 
         this.attachEvents();
         this.updateSourceButtons();
+        
+        // Populate filter sections
+        document.getElementById('filter-jobTitles')?.insertAdjacentHTML('beforeend', this.generateFilterHTML('jobTitles'));
+        document.getElementById('filter-seniority')?.insertAdjacentHTML('beforeend', this.generateFilterHTML('seniority'));
+        document.getElementById('filter-companySize')?.insertAdjacentHTML('beforeend', this.generateFilterHTML('companySize'));
+        document.getElementById('filter-industries')?.insertAdjacentHTML('beforeend', this.generateFilterHTML('industries'));
+        document.getElementById('filter-companyType')?.insertAdjacentHTML('beforeend', this.generateFilterHTML('companyType'));
+        document.getElementById('filter-fundingStage')?.insertAdjacentHTML('beforeend', this.generateFilterHTML('fundingStage'));
+        document.getElementById('filter-locations')?.insertAdjacentHTML('beforeend', this.generateFilterHTML('locations'));
+        document.getElementById('filter-technologies')?.insertAdjacentHTML('beforeend', this.generateFilterHTML('technologies'));
+        
         this.updateStats();
         this.updateOperationsUI();
         if (leadsTab) this.updateLeads();
+        
+        // Re-attach filter listeners after populating
+        document.querySelectorAll('[data-filter]').forEach(checkbox => {
+          checkbox.addEventListener('change', (e) => {
+            const category = e.target.dataset.category;
+            const value = e.target.dataset.value;
+            this.toggleFilter(category, value);
+          });
+        });
       }
     }
 

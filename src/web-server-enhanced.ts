@@ -230,7 +230,8 @@ app.post('/api/bulk/import-csv', express.text({ type: 'text/plain', limit: '50mb
 // Get operation status
 app.get('/api/operations/:operationId', (req: Request, res: Response) => {
   try {
-    const op = operationsStore.get(req.params.operationId);
+    const opId = Array.isArray(req.params.operationId) ? req.params.operationId[0] : req.params.operationId;
+    const op = operationsStore.get(opId);
     if (!op) {
       return res.status(404).json({ error: 'Operation not found' });
     }

@@ -214,9 +214,9 @@ export async function getLeads(limit: number = 100, offset: number = 0): Promise
     db.all(
       `SELECT * FROM leads ORDER BY created_at DESC LIMIT ? OFFSET ?`,
       [limit, offset],
-      (err, rows) => {
+      (err, rows: any) => {
         if (err) reject(err);
-        else resolve(rows || []);
+        else resolve((rows || []) as LeadRecord[]);
       }
     );
   });
@@ -256,9 +256,9 @@ export async function getLeadsByCompany(company: string, limit: number = 50): Pr
     db.all(
       `SELECT * FROM leads WHERE company = ? ORDER BY score DESC LIMIT ?`,
       [company, limit],
-      (err, rows) => {
+      (err, rows: any) => {
         if (err) reject(err);
-        else resolve(rows || []);
+        else resolve((rows || []) as LeadRecord[]);
       }
     );
   });
