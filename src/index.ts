@@ -8,10 +8,12 @@
 
 export * from './types/index.js';
 export * from './core/engine.js';
+export * from './core/lead-scorer.js';
 export * from './enrichment/enrichment-service.js';
 export * from './scrapers/html-scraper.js';
 export * from './scrapers/browser-scraper.js';
 export * from './utils/logger.js';
+export * from './utils/compliance.js';
 
 import { SpectralEngine } from './core/engine.js';
 import { EnrichmentService } from './enrichment/enrichment-service.js';
