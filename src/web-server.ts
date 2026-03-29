@@ -6,9 +6,19 @@ import { RealDataBatchScraper } from './scraper-batch';
 import { ProfessionalLeadScraper, LeadFilters } from './professional-lead-scraper';
 import { AdvancedQueryBuilder } from './advanced-query-builder';
 import { getLogger } from './utils/logger';
+import { VerificationService } from './verification-service';
+import AdvancedLeadScorer from './advanced-lead-scoring';
+import { CRMManager, CRMConfig } from './crm-integration';
+import BulkOperationService from './bulk-operations';
 
 const logger = getLogger('WebServer');
 const app: Express = express();
+
+// Initialize services
+const verificationService = new VerificationService();
+const leadScorer = new AdvancedLeadScorer();
+const crmManager = new CRMManager();
+const bulkOperationService = new BulkOperationService();
 
 // Middleware
 app.use(cors());
@@ -288,6 +298,283 @@ app.get('/api/stats', (req: Request, res: Response) => {
   });
 });
 
+// ============ NEW ADVANCED FEATURES (Hunter.io/Apollo.io parity) ============
+
+// API: Verify leads (email + phone)
+app.post('/api/verify', async (req: Request, res: Response) => {
+  const { leads } = req.body;
+  if (!leads || !Array.isArray(leads)) {
+    return res.status(400).json({ error: 'leads array required' });
+  }
+
+  try {
+    const results = await Promise.all(
+      leads.map(lead =>
+        verificationService.verify({
+          email: lead.email,
+          phone: lead.phone,
+        })
+      )
+    );
+
+    res.json({
+      total: leads.length,
+      results: results.map((result, idx) => ({
+        lead: leads[idx],
+        verification: result,
+      })),
+    });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// API: Bulk verify with operation tracking
+app.post('/api/verify/bulk', async (req: Request, res: Response) => {
+  const { leads, config = {} } = req.body;
+  if (!leads || !Array.isArray(leads)) {
+    return res.status(400).json({ error: 'leads array required' });
+  }
+
+  try {
+    const operationId = await bulkOperationService.bulkVerify(leads, {
+      verifyEmails: true,
+      ...config,
+    });
+
+    // Listen to progress events
+    bulkOperationService.on('operation:progress', (op: any) => {
+      logger.info(`Verification Progress: ${op.operationId} - ${op.progress}%`);
+    });
+
+    res.json({
+      operationId,
+      message: 'Bulk verification started',
+      statusUrl: `/api/bulk/${operationId}`,
+    });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// API: Score leads comprehensively
+app.post('/api/score', (req: Request, res: Response) => {
+  const { leads } = req.body;
+  if (!leads || !Array.isArray(leads)) {
+    return res.status(400).json({ error: 'leads array required' });
+  }
+
+  try {
+    const scoredLeads = leads.map(lead => ({
+      lead,
+      scoring: leadScorer.scoreLeadComprehensive(lead),
+    }));
+
+    const stats = leadScorer.getStats(leads);
+
+    res.json({
+      total: leads.length,
+      scoredLeads,
+      statistics: stats,
+    });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// API: Bulk score operation
+app.post('/api/score/bulk', async (req: Request, res: Response) => {
+  const { leads, config = {} } = req.body;
+  if (!leads || !Array.isArray(leads)) {
+    return res.status(400).json({ error: 'leads array required' });
+  }
+
+  try {
+    const operationId = await bulkOperationService.bulkScore(leads, {
+      scoreLeads: true,
+      ...config,
+    });
+
+    res.json({
+      operationId,
+      message: 'Bulk scoring started',
+      statusUrl: `/api/bulk/${operationId}`,
+    });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// API: Configure CRM integration
+app.post('/api/crm/configure', (req: Request, res: Response) => {
+  const { platform, apiKey, baseUrl, accountId } = req.body;
+
+  if (!platform || !apiKey) {
+    return res.status(400).json({ error: 'platform and apiKey required' });
+  }
+
+  try {
+    const config: CRMConfig = {
+      platform: platform as any,
+      apiKey,
+      baseUrl,
+      accountId,
+    };
+
+    crmManager.registerIntegration(config);
+
+    res.json({
+      message: `${platform} CRM configured successfully`,
+      platform,
+    });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// API: Sync leads to CRM
+app.post('/api/crm/sync', async (req: Request, res: Response) => {
+  const { leads } = req.body;
+  if (!leads || !Array.isArray(leads)) {
+    return res.status(400).json({ error: 'leads array required' });
+  }
+
+  try {
+    const results = await Promise.all(
+      leads.map(lead => crmManager.syncLeadToAll(lead))
+    );
+
+    const flatResults = results.flat();
+    const successful = flatResults.filter(r => r.success).length;
+
+    res.json({
+      total: leads.length,
+      successfulSyncs: successful,
+      results: flatResults,
+    });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// API: Bulk CRM sync with progress tracking
+app.post('/api/crm/sync/bulk', async (req: Request, res: Response) => {
+  const { leads, config = {} } = req.body;
+  if (!leads || !Array.isArray(leads)) {
+    return res.status(400).json({ error: 'leads array required' });
+  }
+
+  try {
+    const operationId = await bulkOperationService.bulkSyncToCRM(leads, {
+      syncToCRM: true,
+      ...config,
+    });
+
+    res.json({
+      operationId,
+      message: 'Bulk CRM sync started',
+      statusUrl: `/api/bulk/${operationId}`,
+    });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// API: Get bulk operation status
+app.get('/api/bulk/:operationId', (req: Request, res: Response) => {
+  const operation = bulkOperationService.getOperation(String(req.params.operationId));
+  if (!operation) {
+    return res.status(404).json({ error: 'Operation not found' });
+  }
+
+  res.json(operation);
+});
+
+// API: List active bulk operations
+app.get('/api/bulk', (req: Request, res: Response) => {
+  const operations = bulkOperationService.getActiveOperations();
+  res.json({
+    total: operations.length,
+    operations,
+  });
+});
+
+// API: Cancel bulk operation
+app.delete('/api/bulk/:operationId', (req: Request, res: Response) => {
+  const cancelled = bulkOperationService.cancelOperation(String(req.params.operationId));
+  res.json({
+    success: cancelled,
+    message: cancelled ? 'Operation cancelled' : 'Operation not found or already completed',
+  });
+});
+
+// API: Get bulk operation history
+app.get('/api/bulk/history', (req: Request, res: Response) => {
+  const limit = parseInt(String(req.query.limit) || '100');
+  const history = bulkOperationService.getOperationHistory(limit);
+
+  res.json({
+    count: history.length,
+    operations: history,
+  });
+});
+
+// API: Get global bulk operations statistics
+app.get('/api/bulk/stats/global', (req: Request, res: Response) => {
+  const stats = bulkOperationService.getGlobalStats();
+  res.json(stats);
+});
+
+// API: Complete lead enrichment (verify + score + optional CRM sync)
+app.post('/api/enrich-complete', async (req: Request, res: Response) => {
+  const { leads, includeVerification = true, includeScoring = true, syncToCRM = false } = req.body;
+
+  if (!leads || !Array.isArray(leads)) {
+    return res.status(400).json({ error: 'leads array required' });
+  }
+
+  try {
+    const enrichedLeads = await Promise.all(
+      leads.map(async lead => {
+        let verification = null;
+        let scoring = null;
+        let crmSync = null;
+
+        if (includeVerification) {
+          verification = await verificationService.verify({
+            email: lead.email,
+            phone: lead.phone,
+          });
+        }
+
+        if (includeScoring) {
+          scoring = leadScorer.scoreLeadComprehensive(lead);
+        }
+
+        if (syncToCRM) {
+          crmSync = await crmManager.syncLeadToAll(lead);
+        }
+
+        return {
+          lead,
+          verification,
+          scoring,
+          crmSync,
+          enrichmentLevel: 'complete',
+        };
+      })
+    );
+
+    res.json({
+      total: leads.length,
+      enrichedLeads,
+      config: { includeVerification, includeScoring, syncToCRM },
+    });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
 // Serve frontend
 app.get('/', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, '../web/public/index.html'));
@@ -297,6 +584,12 @@ app.get('/', (req: Request, res: Response) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   logger.info(`🚀 Web server running at http://localhost:${PORT}`);
+  logger.info(`📊 Advanced features enabled:`);
+  logger.info(`   ✓ Email/Phone Verification (Hunter.io parity)`);
+  logger.info(`   ✓ Advanced Lead Scoring (0-100 with 20+ factors)`);
+  logger.info(`   ✓ CRM Integration (HubSpot, Salesforce, Pipedrive)`);
+  logger.info(`   ✓ Bulk Operations with Real-time Progress`);
+  logger.info(`📡 API Documentation: http://localhost:${PORT}/docs`);
 });
 
 export default app;
