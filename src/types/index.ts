@@ -93,9 +93,7 @@ export interface ScraperResult {
 export interface EnrichmentConfig {
   deduplicate: boolean;
   validateEmails: boolean;
-  enrich
-
-WithSocial: boolean;
+  enrichWithSocial: boolean;
   enrichWithCompanyData: boolean;
   enrichWithPhoneData: boolean;
   maxParallelRequests: number;

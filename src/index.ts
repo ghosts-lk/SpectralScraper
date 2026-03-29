@@ -6,20 +6,20 @@
  * @license Proprietary - See LICENSE file for details.
  */
 
-export * from './types/index.js';
-export * from './core/engine.js';
-export * from './core/lead-scorer.js';
-export * from './enrichment/enrichment-service.js';
-export * from './scrapers/html-scraper.js';
-export * from './scrapers/browser-scraper.js';
-export * from './utils/logger.js';
-export * from './utils/compliance.js';
+export * from './types/index';
+export * from './core/engine';
+export * from './core/lead-scorer';
+export * from './enrichment/enrichment-service';
+export * from './scrapers/html-scraper';
+export * from './scrapers/browser-scraper';
+export * from './utils/logger';
+export * from './utils/compliance';
 
-import { SpectralEngine } from './core/engine.js';
-import { EnrichmentService } from './enrichment/enrichment-service.js';
-import { HtmlScraper } from './scrapers/html-scraper.js';
-import { BrowserScraper } from './scrapers/browser-scraper.js';
-import { getLogger } from './utils/logger.js';
+import { SpectralEngine } from './core/engine';
+import { EnrichmentService } from './enrichment/enrichment-service';
+import { HtmlScraper } from './scrapers/html-scraper';
+import { BrowserScraper as _BrowserScraper } from './scrapers/browser-scraper';
+import { getLogger } from './utils/logger';
 import {
   CacheConfig,
   ComplianceConfig,
@@ -146,4 +146,9 @@ export async function quickStart() {
   console.log('Statistics:', stats);
 
   await scraper.shutdown();
+}
+
+// Run the quick start if this file is executed directly
+if (require.main === module) {
+  quickStart().catch(console.error);
 }

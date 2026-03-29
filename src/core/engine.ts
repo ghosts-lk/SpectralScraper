@@ -92,7 +92,7 @@ export class SpectralEngine extends EventEmitter {
       // Check cache first
       const cacheKey = this.generateCacheKey(query, sources);
       if (this.config.cache.enabled) {
-        const cached = this.getFromCache(cacheKey);
+        const cached = this.getFromCache<Lead[]>(cacheKey);
         if (cached) {
           this.logger.info(`Cache hit for query ${cacheKey}`);
           this.stats.cacheSavings++;
@@ -128,7 +128,7 @@ export class SpectralEngine extends EventEmitter {
       }
 
       // Enrich leads
-      if (this.config.enrichment.enabled) {
+      if (this.config.enrichment && (this.config.enrichment as any).enabled !== false) {
         allLeads = await this.enrichLeads(allLeads);
       }
 

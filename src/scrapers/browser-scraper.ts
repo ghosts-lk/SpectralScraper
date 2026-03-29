@@ -10,7 +10,7 @@ import { Logger } from 'winston';
 import { LeadQuery, ScraperResult, ScraperSource } from '../types/index.js';
 
 export class BrowserScraper {
-  private browser: puppeteer.Browser | null = null;
+  private browser: any = null;
 
   constructor(
     private source: ScraperSource,
@@ -42,7 +42,7 @@ export class BrowserScraper {
       await this.initialize();
     }
 
-    let page: puppeteer.Page | null = null;
+    let page: any = null;
     try {
       page = await this.browser!.newPage();
 

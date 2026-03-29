@@ -34,7 +34,7 @@ export class HtmlScraper {
       });
 
       const $ = cheerio.load(response.data);
-      const contacts = this.extractContacts($);
+      const contacts = this.extractContacts($ as any);
 
       this.logger.debug(`Scraped ${contacts.length} contacts from ${url}`);
       return contacts;
@@ -89,7 +89,7 @@ export class HtmlScraper {
       }
     });
 
-    return Array.from(new Set(contacts.map(JSON.stringify))).map(JSON.parse);
+    return Array.from(new Set(contacts.map((c:any) => JSON.stringify(c)))).map((s:any) => JSON.parse(s));
   }
 
   /**
