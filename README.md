@@ -130,6 +130,93 @@ const stats = scraper.getStats();
 console.log(`Total: ${stats.totalLeads}, Score avg: ${stats.avgScore}`);
 ```
 
+### Advanced Professional Filtering (NEW! 🎯)
+
+Target specific professional profiles with sophisticated filtering:
+
+```typescript
+import { ProfessionalLeadScraper, type LeadFilters } from '@ghost-protocol/spectral-scraper';
+
+const scraper = new ProfessionalLeadScraper({
+  location: ['San Francisco', 'New York'],  
+  industry: ['Technology', 'SaaS'],
+  jobTitle: ['CEO', 'CTO', 'Founder'],
+  seniority: 'executive',
+  companySize: 'startup',
+  employeeCount: { min: 10, max: 100 },
+  revenue: { min: 0, max: 50 },  // in millions
+  verification: 'strict',
+});
+
+// Execute search with filters applied
+const techCEOs = await scraper.scrape(
+  domains,    // Hunter.io domains
+  companies,  // Clearbit companies
+  queries     // Apollo.io queries
+);
+
+// Export results
+const csvPath = await scraper.exportCSV(techCEOs, 'tech_ceos');
+```
+
+**Filter Categories:**
+- 📍 **Location**: Country, state, city targeting
+- 🏢 **Industry**: Technology, Finance, Healthcare, Retail, Manufacturing, SaaS
+- 💼 **Job Title**: CEO, Founder, CTO, VP, Director, Manager, SDR, and more
+- 📈 **Seniority**: Entry, Mid, Senior, Executive levels
+- 🏭 **Company Size**: Startup (1-50), Small (51-250), Medium (251-1000), Enterprise (1000+)
+- 👥 **Employee Count**: Custom min-max ranges
+- 💰 **Revenue**: Annual revenue in millions
+- ✅ **Verification Level**: Lenient, Moderate, or Strict
+
+**Pre-Built Filter Presets:**
+- Tech CEOs - Executive technology professionals
+- VC-Ready Startups - Early-stage funded companies
+- Enterprise Leaders - Senior decision makers
+- Sales Development - SDRs, AEs, and sales managers  
+- Finance Executives - CFOs and financial leaders
+
+---
+
+## Web UI Interface
+
+Launch the professional web interface at `http://localhost:3000`:
+
+```bash
+npm run web:dev   # Development mode with hot reload
+npm run web:start # Production deployment
+```
+
+**Features:**
+- 📑 Tabbed configuration (Basic, Filters, Advanced)
+- 🎯 One-click filter presets
+- 📊 Real-time job status and progress
+- 📥 CSV export with full professional data
+- 📈 Live statistics dashboard
+- 🔄 Auto-refresh every 3 seconds
+
+---
+
+## API Endpoints
+
+### Filter Management
+- `GET /api/filters/presets` - List all presets
+- `GET /api/filters/presets/:name` - Get specific preset
+- `POST /api/filters/queries` - Build optimized queries
+- `POST /api/filters/validate` - Validate filter combinations
+
+### Job Management  
+- `POST /api/jobs/start` - Start new scraping job with filters
+- `GET /api/jobs` - List all jobs
+- `GET /api/jobs/:id/download` - Download CSV results
+- `GET /api/stats` - Global statistics
+
+### Data Sources
+- `GET /api/sources/status` - Check available sources
+- `POST /api/sources/:name/credential` - Configure API keys
+
+See [PROFESSIONAL_FILTERING_GUIDE.md](./PROFESSIONAL_FILTERING_GUIDE.md) for complete API documentation.
+
 ---
 
 ## Scrapers & Sources
