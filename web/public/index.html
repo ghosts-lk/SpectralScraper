@@ -213,6 +213,63 @@
     .status-running { background: #fef08a; color: #854d0e; }
     .status-success { background: #dcfce7; color: #166534; }
     .status-error { background: #fecaca; color: #991b1b; }
+    .filter-section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #e5e7eb;
+    }
+    .filter-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .filter-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+    }
+    .filter-option {
+      padding: 10px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .filter-option:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+    .filter-option.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .filter-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .filter-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    .search-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+    }
     .error-box {
       background: #fef2f2;
       border: 1px solid #fecaca;
@@ -244,6 +301,42 @@
       background: #f0fdf4;
       color: #166534;
     }
+    .preset-btn {
+      padding: 8px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .preset-btn:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+    .preset-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .criteria-summary {
+      background: #f0f4ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 6px;
+      padding: 16px;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+    .criteria-badge {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin: 4px;
+      font-size: 12px;
+    }
     @keyframes slideIn {
       from { transform: translateX(400px); opacity: 0; }
       to { transform: translateX(0); opacity: 1; }
@@ -266,6 +359,77 @@
       { id: 'twitter', name: 'Twitter', emoji: '𝕏' },
     ];
 
+    const FILTER_CONFIG = {
+      jobTitles: [
+        'CEO', 'CTO', 'VP', 'Director', 'Manager', 'Lead', 'Engineer', 'Sales', 'Marketing',
+        'Founder', 'CFO', 'COO', 'Product Manager', 'Head of', 'SVP', 'VP Sales',
+        'VP Engineering', 'VP Product', 'Head of Sales', 'Director of'
+      ],
+      seniority: ['C-Level', 'VP', 'Director', 'Manager', 'Individual Contributor'],
+      companySize: ['1-10', '11-50', '51-200', '201-500', '501-1000', '1000-5000', '5000+'],
+      industries: [
+        'Technology', 'SaaS', 'Software', 'Finance', 'Healthcare', 'Fintech', 'Insurance',
+        'E-commerce', 'Manufacturing', 'Retail', 'Education', 'Real Estate', 'Logistics',
+        'Telecom', 'Media', 'Entertainment', 'Travel', 'Hospitality', 'Food & Beverage'
+      ],
+      locations: [
+        'United States', 'Canada', 'United Kingdom', 'Germany', 'France', 'Australia',
+        'Japan', 'India', 'Singapore', 'Brazil', 'Mexico', 'Europe', 'Asia-Pacific'
+      ],
+      technologies: [
+        'AWS', 'Azure', 'Google Cloud', 'Salesforce', 'HubSpot', 'Slack', 'Zendesk',
+        'Shopify', 'WordPress', 'Node.js', 'React', 'Python', 'Java', 'Kubernetes',
+        'Docker', 'AI/ML', 'Blockchain', 'IoT', 'GraphQL', 'REST APIs'
+      ],
+      companyType: ['Public', 'Private', 'Startup', 'Enterprise', 'SMB', 'Non-Profit'],
+      fundingStage: ['Seed', 'Series A', 'Series B', 'Series C', 'Series D+', 'IPO', 'Acquired']
+    };
+
+    const SEARCH_PRESETS = [
+      {
+        name: 'Tech VPs & CTOs',
+        icon: '👨‍💼',
+        filters: {
+          jobTitles: ['CTO', 'VP', 'VP Engineering', 'Head of Engineering'],
+          industries: ['Technology', 'SaaS', 'Software'],
+          seniority: ['C-Level', 'VP']
+        }
+      },
+      {
+        name: 'Sales Leaders',
+        icon: '📈',
+        filters: {
+          jobTitles: ['VP Sales', 'Sales Director', 'Head of Sales', 'Sales Manager'],
+          seniority: ['C-Level', 'VP', 'Director']
+        }
+      },
+      {
+        name: 'Startup Founders',
+        icon: '🚀',
+        filters: {
+          jobTitles: ['Founder', 'CEO'],
+          companyType: ['Startup'],
+          companySize: ['1-10', '11-50']
+        }
+      },
+      {
+        name: 'Enterprise Decision Makers',
+        icon: '🏢',
+        filters: {
+          seniority: ['C-Level', 'VP', 'Director'],
+          companySize: ['1000+']
+        }
+      },
+      {
+        name: 'Finance & FinTech',
+        icon: '💰',
+        filters: {
+          industries: ['Finance', 'Fintech', 'Insurance'],
+          jobTitles: ['CFO', 'Finance Director', 'Treasurer']
+        }
+      }
+    ];
+
     class App {
       constructor() {
         this.stats = { total_leads: 0, verified_leads: 0, avg_score: 0, unique_companies: 0 };
@@ -273,8 +437,19 @@
         this.operations = [];
         this.selectedSources = ['linkedin'];
         this.activeTab = 'home';
-        this.isProcessing = false;
-        this.init();
+        this.isProcessing = false;        
+        // Criteria management
+        this.selectedFilters = {
+          jobTitles: [],
+          seniority: [],
+          companySize: [],
+          industries: [],
+          locations: [],
+          technologies: [],
+          companyType: [],
+          fundingStage: []
+        };
+                this.init();
       }
 
       // Toast notification system
@@ -625,11 +800,30 @@
       }
 
       attachEvents() {
+        // Source buttons
         SOURCES.forEach(src => {
           const btn = document.querySelector(`[data-src="${src.id}"]`);
           if (btn) {
             btn.addEventListener('click', () => this.toggleSource(src.id));
           }
+        });
+
+        // Filter checkboxes
+        document.querySelectorAll('[data-filter]').forEach(checkbox => {
+          checkbox.addEventListener('change', (e) => {
+            const category = e.target.dataset.category;
+            const value = e.target.dataset.value;
+            this.toggleFilter(category, value);
+          });
+        });
+
+        // Preset buttons
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const presetName = btn.dataset.preset;
+            const preset = SEARCH_PRESETS.find(p => p.name === presetName);
+            if (preset) this.applyPreset(preset);
+          });
         });
 
         const launchBtn = document.getElementById('launch-btn');
@@ -657,6 +851,91 @@
         tabs.forEach(tab => {
           tab.addEventListener('click', () => this.setTab(tab.dataset.tab));
         });
+      }
+
+      // Filter management
+      toggleFilter(category, value) {
+        if (!this.selectedFilters[category]) return;
+        const idx = this.selectedFilters[category].indexOf(value);
+        if (idx > -1) {
+          this.selectedFilters[category].splice(idx, 1);
+        } else {
+          this.selectedFilters[category].push(value);
+        }
+        this.updateFiltersUI();
+      }
+
+      clearAllFilters() {
+        Object.keys(this.selectedFilters).forEach(key => {
+          this.selectedFilters[key] = [];
+        });
+        this.updateFiltersUI();
+        this.showToast('All filters cleared', 'info');
+      }
+
+      applyPreset(preset) {
+        Object.keys(preset.filters).forEach(category => {
+          this.selectedFilters[category] = [...preset.filters[category]];
+        });
+        this.updateFiltersUI();
+        this.showToast(`Applied preset: ${preset.name}`, 'success');
+      }
+
+      updateFiltersUI() {
+        // Update filter checkboxes
+        Object.keys(FILTER_CONFIG).forEach(category => {
+          FILTER_CONFIG[category].forEach(option => {
+            const checkbox = document.querySelector(`[data-filter="${category}-${option}"]`);
+            if (checkbox) {
+              checkbox.checked = this.selectedFilters[category].includes(option);
+            }
+          });
+        });
+        this.updateCriteriaSummary();
+      }
+
+      updateCriteriaSummary() {
+        const summary = document.getElementById('criteria-summary');
+        if (!summary) return;
+
+        let activeCriteria = [];
+        Object.keys(this.selectedFilters).forEach(category => {
+          this.selectedFilters[category].forEach(value => {
+            activeCriteria.push({ category, value });
+          });
+        });
+
+        if (activeCriteria.length === 0) {
+          summary.innerHTML = '<p style="color: #9ca3af;">No criteria selected - showing all leads</p>';
+          return;
+        }
+
+        summary.innerHTML = `
+          <div style="margin-bottom: 12px;">
+            <strong>Active Criteria: ${activeCriteria.length}</strong>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            ${activeCriteria.map(c => `
+              <span class="criteria-badge">
+                ${c.value}
+                <button data-remove="${c.category}-${c.value}" style="background: none; border: none; color: inherit; cursor: pointer; margin-left: 4px; font-weight: bold;">×</button>
+              </span>
+            `).join('')}
+            <button id="clear-filters-btn" class="btn" style="padding: 6px 12px; font-size: 12px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer;">
+              Clear All
+            </button>
+          </div>
+        `;
+
+        // Attach remove listeners
+        document.querySelectorAll('[data-remove]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const [cat, val] = btn.dataset.remove.split('-');
+            this.toggleFilter(cat, val);
+          });
+        });
+
+        document.getElementById('clear-filters-btn')?.addEventListener('click', () => this.clearAllFilters());
       }
 
       render() {
@@ -714,6 +993,175 @@
                     <button id="launch-btn" class="btn btn-primary" style="padding: 14px 32px; font-size: 16px; ${this.isProcessing ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
                       ${this.isProcessing ? '⏳ Processing...' : '🚀 Launch Scraper'}
                     </button>
+                  </div>
+
+                  <!-- Professional Criteria Filters -->
+                  <div style="margin-bottom: 40px;">
+                    <h2 class="section-title">🎯 Search Criteria (Apollo.io Level)</h2>
+                    
+                    <!-- Quick Presets -->
+                    <div class="filter-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: 1px solid #6366f1; border-radius: 8px; padding: 20px; margin-bottom: 20px; color: white;">
+                      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                        <span style="font-size: 20px;">⚡</span>
+                        <strong style="font-size: 15px;">Quick Search Presets</strong>
+                      </div>
+                      <p style="font-size: 13px; opacity: 0.9; margin-bottom: 12px;">Apply pre-configured searches for common lead types:</p>
+                      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px;">
+                        ${SEARCH_PRESETS.map(preset => `
+                          <button class="preset-btn" data-preset="${preset.name}" style="padding: 12px 16px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 6px; cursor: pointer; font-weight: 500; transition: all 0.2s; display: flex; align-items: center; gap: 6px; justify-content: center;">
+                            <span>${preset.icon}</span>
+                            <span>${preset.name}</span>
+                          </button>
+                        `).join('')}
+                      </div>
+                    </div>
+
+                    <!-- Criteria Summary -->
+                    <div class="filter-section" id="criteria-summary" style="background: #f0f4ff; border: 1px solid #c7d2fe; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                      <p style="color: #9ca3af;">No criteria selected - showing all leads</p>
+                    </div>
+
+                    <!-- Filter Categories -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+                      <!-- Job Titles -->
+                      <div class="filter-section">
+                        <div class="filter-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600;">
+                          <span style="font-size: 18px;">👔</span>
+                          Job Titles
+                        </div>
+                        <div class="filter-options">
+                          ${FILTER_CONFIG.jobTitles.map(title => `
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+                              <input type="checkbox" data-filter="jobTitles-${title}" data-category="jobTitles" data-value="${title}" style="cursor: pointer;">
+                              <span>${title}</span>
+                            </label>
+                          `).join('')}
+                        </div>
+                      </div>
+
+                      <!-- Seniority Level -->
+                      <div class="filter-section">
+                        <div class="filter-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600;">
+                          <span style="font-size: 18px;">📈</span>
+                          Seniority
+                        </div>
+                        <div class="filter-options">
+                          ${FILTER_CONFIG.seniority.map(level => `
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+                              <input type="checkbox" data-filter="seniority-${level}" data-category="seniority" data-value="${level}" style="cursor: pointer;">
+                              <span>${level}</span>
+                            </label>
+                          `).join('')}
+                        </div>
+                      </div>
+
+                      <!-- Company Size -->
+                      <div class="filter-section">
+                        <div class="filter-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600;">
+                          <span style="font-size: 18px;">🏢</span>
+                          Company Size
+                        </div>
+                        <div class="filter-options">
+                          ${FILTER_CONFIG.companySize.map(size => `
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+                              <input type="checkbox" data-filter="companySize-${size}" data-category="companySize" data-value="${size}" style="cursor: pointer;">
+                              <span>${size}</span>
+                            </label>
+                          `).join('')}
+                        </div>
+                      </div>
+
+                      <!-- Industries -->
+                      <div class="filter-section">
+                        <div class="filter-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600;">
+                          <span style="font-size: 18px;">🏭</span>
+                          Industries
+                        </div>
+                        <div class="filter-options">
+                          ${FILTER_CONFIG.industries.map(industry => `
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+                              <input type="checkbox" data-filter="industries-${industry}" data-category="industries" data-value="${industry}" style="cursor: pointer;">
+                              <span>${industry}</span>
+                            </label>
+                          `).join('')}
+                        </div>
+                      </div>
+
+                      <!-- Company Type -->
+                      <div class="filter-section">
+                        <div class="filter-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600;">
+                          <span style="font-size: 18px;">🏛️</span>
+                          Company Type
+                        </div>
+                        <div class="filter-options">
+                          ${FILTER_CONFIG.companyType.map(type => `
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+                              <input type="checkbox" data-filter="companyType-${type}" data-category="companyType" data-value="${type}" style="cursor: pointer;">
+                              <span>${type}</span>
+                            </label>
+                          `).join('')}
+                        </div>
+                      </div>
+
+                      <!-- Funding Stage -->
+                      <div class="filter-section">
+                        <div class="filter-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600;">
+                          <span style="font-size: 18px;">💎</span>
+                          Funding Stage
+                        </div>
+                        <div class="filter-options">
+                          ${FILTER_CONFIG.fundingStage.map(stage => `
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+                              <input type="checkbox" data-filter="fundingStage-${stage}" data-category="fundingStage" data-value="${stage}" style="cursor: pointer;">
+                              <span>${stage}</span>
+                            </label>
+                          `).join('')}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Location & Technology Filters (Advanced) -->
+                    <div style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e5e7eb;">
+                      <details style="cursor: pointer;">
+                        <summary style="font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                          <span>⚙️</span>
+                          <span>Advanced Filters</span>
+                        </summary>
+                        <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+                          <!-- Locations -->
+                          <div class="filter-section">
+                            <div class="filter-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600;">
+                              <span style="font-size: 18px;">🌍</span>
+                              Locations
+                            </div>
+                            <div class="filter-options">
+                              ${FILTER_CONFIG.locations.map(loc => `
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+                                  <input type="checkbox" data-filter="locations-${loc}" data-category="locations" data-value="${loc}" style="cursor: pointer;">
+                                  <span>${loc}</span>
+                                </label>
+                              `).join('')}
+                            </div>
+                          </div>
+
+                          <!-- Technologies -->
+                          <div class="filter-section">
+                            <div class="filter-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600;">
+                              <span style="font-size: 18px;">💻</span>
+                              Technologies
+                            </div>
+                            <div class="filter-options">
+                              ${FILTER_CONFIG.technologies.map(tech => `
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+                                  <input type="checkbox" data-filter="technologies-${tech}" data-category="technologies" data-value="${tech}" style="cursor: pointer;">
+                                  <span>${tech}</span>
+                                </label>
+                              `).join('')}
+                            </div>
+                          </div>
+                        </div>
+                      </details>
+                    </div>
                   </div>
 
                   <!-- CSV Import -->
