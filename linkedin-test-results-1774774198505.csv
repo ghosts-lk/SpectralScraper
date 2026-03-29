@@ -1,0 +1,106 @@
+Name,Email,Phone,Title,Company,City,State,Verified,Score,LinkedIn URL
+"Richard Garcia",rgarcia@google.com,+1-201-233-8220,"CTO","Google",Mountain View,CA,Yes,91,https://www.linkedin.com/in/richard-garcia
+"James Wilson",james.wilson@google.com,+1-826-234-6280,"Senior Engineer","Google",Mountain View,CA,Yes,91,https://www.linkedin.com/in/james-wilson
+"David Davis",david.davis@google.com,+1-316-379-8375,"CEO","Google",Mountain View,CA,Yes,91,https://www.linkedin.com/in/david-davis
+"David Lopez",dlopez@google.com,+1-543-797-9395,"CTO","Google",Mountain View,CA,Yes,91,https://www.linkedin.com/in/david-lopez
+"Patricia Brown",pbrown@google.com,+1-657-739-6417,"CEO","Google",Mountain View,CA,Yes,91,https://www.linkedin.com/in/patricia-brown
+"Richard Lopez",rlopez@microsoft.com,+1-925-981-9162,"VP Sales","Microsoft",Redmond,WA,Yes,91,https://www.linkedin.com/in/richard-lopez
+"Joseph Hernandez",jhernandez@microsoft.com,+1-977-422-7477,"Product Manager","Microsoft",Redmond,WA,Yes,91,https://www.linkedin.com/in/joseph-hernandez
+"William Miller",william@microsoft.com,+1-727-365-9030,"Staff Engineer","Microsoft",Redmond,WA,Yes,91,https://www.linkedin.com/in/william-miller
+"Patricia Smith",patricia@microsoft.com,+1-767-304-7976,"CTO","Microsoft",Redmond,WA,Yes,91,https://www.linkedin.com/in/patricia-smith
+"David Jones",david@microsoft.com,+1-303-517-9878,"VP Sales","Microsoft",Redmond,WA,Yes,91,https://www.linkedin.com/in/david-jones
+"Barbara Thomas",barbara.thomas@apple.com,+1-400-422-2631,"Product Manager","Apple",Cupertino,CA,Yes,91,https://www.linkedin.com/in/barbara-thomas
+"Joseph Gonzalez",jgonzalez@apple.com,+1-832-799-9613,"Staff Engineer","Apple",Cupertino,CA,Yes,91,https://www.linkedin.com/in/joseph-gonzalez
+"Robert Brown",rbrown@apple.com,+1-925-878-2842,"Product Manager","Apple",Cupertino,CA,Yes,91,https://www.linkedin.com/in/robert-brown
+"Joseph Rodriguez",jrodriguez@apple.com,+1-224-303-7784,"CEO","Apple",Cupertino,CA,Yes,91,https://www.linkedin.com/in/joseph-rodriguez
+"Emma Jones",ejones@apple.com,+1-633-987-7252,"Product Manager","Apple",Cupertino,CA,Yes,91,https://www.linkedin.com/in/emma-jones
+"Joseph Rodriguez",joseph.rodriguez@apple.com,+1-418-459-3055,"Sales Director","Apple",Cupertino,CA,Yes,91,https://www.linkedin.com/in/joseph-rodriguez
+"Robert Lopez",robert@apple.com,+1-957-760-4029,"VP Sales","Apple",Cupertino,CA,Yes,91,https://www.linkedin.com/in/robert-lopez
+"Maria Smith",msmith@apple.com,+1-592-481-5822,"VP Sales","Apple",Cupertino,CA,Yes,91,https://www.linkedin.com/in/maria-smith
+"Emma Brown",emma.brown@apple.com,+1-795-917-1721,"Engineering Manager","Apple",Cupertino,CA,Yes,91,https://www.linkedin.com/in/emma-brown
+"John Gonzalez",jgonzalez@meta.com,+1-247-921-9385,"Senior Engineer","Meta",Menlo Park,CA,Yes,91,https://www.linkedin.com/in/john-gonzalez
+"Michael Hernandez",michael.hernandez@meta.com,+1-302-411-8690,"Sales Director","Meta",Menlo Park,CA,Yes,91,https://www.linkedin.com/in/michael-hernandez
+"Robert Anderson",randerson@meta.com,+1-347-510-7124,"VP Sales","Meta",Menlo Park,CA,Yes,91,https://www.linkedin.com/in/robert-anderson
+"Sarah Wilson",sarah.wilson@meta.com,+1-329-396-5477,"Engineering Manager","Meta",Menlo Park,CA,Yes,91,https://www.linkedin.com/in/sarah-wilson
+"Maria Miller",mmiller@meta.com,+1-705-865-9719,"Sales Director","Meta",Menlo Park,CA,Yes,91,https://www.linkedin.com/in/maria-miller
+"Robert Jones",rjones@meta.com,+1-886-733-5416,"CEO","Meta",Menlo Park,CA,Yes,91,https://www.linkedin.com/in/robert-jones
+"James Wilson",james@amazon.com,+1-492-285-5960,"Engineering Manager","Amazon",Seattle,WA,Yes,91,https://www.linkedin.com/in/james-wilson
+"Michael Lopez",michael@amazon.com,+1-617-808-2064,"Product Manager","Amazon",Seattle,WA,Yes,91,https://www.linkedin.com/in/michael-lopez
+"Michael Martinez",mmartinez@amazon.com,+1-959-741-4261,"Senior Engineer","Amazon",Seattle,WA,Yes,91,https://www.linkedin.com/in/michael-martinez
+"Michael Garcia",mgarcia@amazon.com,+1-236-354-5848,"Staff Engineer","Amazon",Seattle,WA,Yes,91,https://www.linkedin.com/in/michael-garcia
+"Barbara Davis",barbara@amazon.com,+1-877-523-5132,"Senior Engineer","Amazon",Seattle,WA,Yes,91,https://www.linkedin.com/in/barbara-davis
+"Patricia Davis",pdavis@amazon.com,+1-943-803-1788,"VP Sales","Amazon",Seattle,WA,Yes,91,https://www.linkedin.com/in/patricia-davis
+"Jennifer Gonzalez",jennifer@amazon.com,+1-867-733-3476,"Engineering Manager","Amazon",Seattle,WA,Yes,91,https://www.linkedin.com/in/jennifer-gonzalez
+"Robert Johnson",robert@amazon.com,+1-836-932-2068,"CEO","Amazon",Seattle,WA,Yes,91,https://www.linkedin.com/in/robert-johnson
+"Patricia Gonzalez",pgonzalez@amazon.com,+1-754-900-7838,"Staff Engineer","Amazon",Seattle,WA,Yes,91,https://www.linkedin.com/in/patricia-gonzalez
+"John Jones",john@amazon.com,+1-446-360-4436,"Product Manager","Amazon",Seattle,WA,Yes,91,https://www.linkedin.com/in/john-jones
+"Maria Smith",msmith@amazon.com,+1-205-462-6762,"Product Manager","Amazon",Seattle,WA,Yes,91,https://www.linkedin.com/in/maria-smith
+"Maria Gonzalez",maria@amazon.com,+1-817-878-5033,"Staff Engineer","Amazon",Seattle,WA,Yes,91,https://www.linkedin.com/in/maria-gonzalez
+"David Johnson",david.johnson@amazon.com,+1-803-760-1651,"Engineering Manager","Amazon",Seattle,WA,Yes,91,https://www.linkedin.com/in/david-johnson
+"Maria Wilson",maria@tesla.com,+1-618-752-8657,"Staff Engineer","Tesla",Austin,TX,Yes,91,https://www.linkedin.com/in/maria-wilson
+"Joseph Martinez",jmartinez@tesla.com,+1-361-537-8647,"Product Manager","Tesla",Austin,TX,Yes,91,https://www.linkedin.com/in/joseph-martinez
+"James Hernandez",james@tesla.com,+1-659-578-4810,"VP Sales","Tesla",Austin,TX,Yes,91,https://www.linkedin.com/in/james-hernandez
+"Richard Wilson",richard@tesla.com,+1-209-778-7785,"Staff Engineer","Tesla",Austin,TX,Yes,91,https://www.linkedin.com/in/richard-wilson
+"William Martinez",william@tesla.com,+1-761-379-2909,"VP Sales","Tesla",Austin,TX,Yes,91,https://www.linkedin.com/in/william-martinez
+"William Thomas",william@tesla.com,+1-441-922-2183,"Sales Director","Tesla",Austin,TX,Yes,91,https://www.linkedin.com/in/william-thomas
+"David Miller",david.miller@tesla.com,+1-836-473-4972,"CTO","Tesla",Austin,TX,Yes,91,https://www.linkedin.com/in/david-miller
+"Jane Thomas",jthomas@tesla.com,+1-825-988-5087,"Staff Engineer","Tesla",Austin,TX,Yes,91,https://www.linkedin.com/in/jane-thomas
+"James Gonzalez",jgonzalez@tesla.com,+1-823-232-7096,"Sales Director","Tesla",Austin,TX,Yes,91,https://www.linkedin.com/in/james-gonzalez
+"William Lopez",william.lopez@tesla.com,+1-349-959-3140,"VP Sales","Tesla",Austin,TX,Yes,91,https://www.linkedin.com/in/william-lopez
+"Robert Brown",robert.brown@tesla.com,+1-421-430-8904,"Engineering Manager","Tesla",Austin,TX,Yes,91,https://www.linkedin.com/in/robert-brown
+"David Gonzalez",david@tesla.com,+1-373-579-3317,"CTO","Tesla",Austin,TX,Yes,91,https://www.linkedin.com/in/david-gonzalez
+"James Gonzalez",james@openai.com,+1-406-689-6478,"VP Sales","OpenAI",San Francisco,CA,Yes,91,https://www.linkedin.com/in/james-gonzalez
+"Michael Smith",msmith@openai.com,+1-601-240-6212,"CTO","OpenAI",San Francisco,CA,Yes,91,https://www.linkedin.com/in/michael-smith
+"Jennifer Rodriguez",jennifer.rodriguez@openai.com,+1-899-802-8925,"Sales Director","OpenAI",San Francisco,CA,Yes,91,https://www.linkedin.com/in/jennifer-rodriguez
+"Barbara Davis",barbara@openai.com,+1-608-283-3835,"Product Manager","OpenAI",San Francisco,CA,Yes,91,https://www.linkedin.com/in/barbara-davis
+"Richard Rodriguez",richard.rodriguez@stripe.com,+1-388-982-8039,"VP Sales","Stripe",San Francisco,CA,Yes,91,https://www.linkedin.com/in/richard-rodriguez
+"Robert Smith",rsmith@stripe.com,+1-985-293-5828,"Staff Engineer","Stripe",San Francisco,CA,Yes,91,https://www.linkedin.com/in/robert-smith
+"Maria Wilson",mwilson@stripe.com,+1-566-521-8767,"Engineering Manager","Stripe",San Francisco,CA,Yes,91,https://www.linkedin.com/in/maria-wilson
+"Patricia Rodriguez",patricia.rodriguez@stripe.com,+1-609-812-3456,"VP Sales","Stripe",San Francisco,CA,Yes,91,https://www.linkedin.com/in/patricia-rodriguez
+"Barbara Williams",barbara@stripe.com,+1-896-440-4554,"VP Sales","Stripe",San Francisco,CA,Yes,91,https://www.linkedin.com/in/barbara-williams
+"Richard Williams",richard@stripe.com,+1-432-792-9515,"Engineering Manager","Stripe",San Francisco,CA,Yes,91,https://www.linkedin.com/in/richard-williams
+"Patricia Garcia",patricia@stripe.com,+1-864-330-7467,"Senior Engineer","Stripe",San Francisco,CA,Yes,91,https://www.linkedin.com/in/patricia-garcia
+"Patricia Brown",patricia@stripe.com,+1-649-302-5478,"Product Manager","Stripe",San Francisco,CA,Yes,91,https://www.linkedin.com/in/patricia-brown
+"Sarah Thomas",sarah.thomas@stripe.com,+1-700-702-7253,"Sales Director","Stripe",San Francisco,CA,Yes,91,https://www.linkedin.com/in/sarah-thomas
+"David Smith",david.smith@stripe.com,+1-988-361-1704,"Sales Director","Stripe",San Francisco,CA,Yes,91,https://www.linkedin.com/in/david-smith
+"Barbara Brown",bbrown@stripe.com,+1-204-403-1107,"Sales Director","Stripe",San Francisco,CA,Yes,91,https://www.linkedin.com/in/barbara-brown
+"James Williams",james.williams@github.com,+1-703-338-6986,"Engineering Manager","GitHub",San Francisco,CA,Yes,91,https://www.linkedin.com/in/james-williams
+"David Smith",david@github.com,+1-852-395-7823,"Product Manager","GitHub",San Francisco,CA,Yes,91,https://www.linkedin.com/in/david-smith
+"James Wilson",jwilson@github.com,+1-369-277-8172,"Engineering Manager","GitHub",San Francisco,CA,Yes,91,https://www.linkedin.com/in/james-wilson
+"Barbara Anderson",barbara.anderson@github.com,+1-515-423-7859,"VP Sales","GitHub",San Francisco,CA,Yes,91,https://www.linkedin.com/in/barbara-anderson
+"Barbara Jones",barbara.jones@github.com,+1-663-966-7447,"CTO","GitHub",San Francisco,CA,Yes,91,https://www.linkedin.com/in/barbara-jones
+"Richard Gonzalez",richard.gonzalez@github.com,+1-330-572-6556,"CTO","GitHub",San Francisco,CA,Yes,91,https://www.linkedin.com/in/richard-gonzalez
+"John Smith",john@github.com,+1-207-459-8298,"Sales Director","GitHub",San Francisco,CA,Yes,91,https://www.linkedin.com/in/john-smith
+"William Wilson",william@github.com,+1-504-513-8798,"Product Manager","GitHub",San Francisco,CA,Yes,91,https://www.linkedin.com/in/william-wilson
+"Lisa Jones",ljones@github.com,+1-371-694-1953,"CTO","GitHub",San Francisco,CA,Yes,91,https://www.linkedin.com/in/lisa-jones
+"Patricia Wilson",pwilson@figma.com,+1-400-401-1891,"CEO","Figma",San Francisco,CA,Yes,91,https://www.linkedin.com/in/patricia-wilson
+"Joseph Brown",jbrown@figma.com,+1-827-906-7940,"CTO","Figma",San Francisco,CA,Yes,91,https://www.linkedin.com/in/joseph-brown
+"Jane Wilson",jane.wilson@figma.com,+1-476-918-7233,"Staff Engineer","Figma",San Francisco,CA,Yes,91,https://www.linkedin.com/in/jane-wilson
+"David Rodriguez",david.rodriguez@figma.com,+1-793-759-4265,"Staff Engineer","Figma",San Francisco,CA,Yes,91,https://www.linkedin.com/in/david-rodriguez
+"Joseph Thomas",jthomas@figma.com,+1-749-552-1667,"VP Sales","Figma",San Francisco,CA,Yes,91,https://www.linkedin.com/in/joseph-thomas
+"Jane Williams",jwilliams@google.com,+1-1031-897-1417,"CTO","Google",Mountain View,CA,Yes,86,https://www.linkedin.com/in/jane-williams
+"Michael Hernandez",mhernandez@google.com,+1-1039-573-9660,"Sales Director","Google",Mountain View,CA,Yes,86,https://www.linkedin.com/in/michael-hernandez
+"William Thomas",william@microsoft.com,+1-570-1088-9647,"Senior Engineer","Microsoft",Redmond,WA,Yes,86,https://www.linkedin.com/in/william-thomas
+"James Gonzalez",james@microsoft.com,+1-1072-663-4822,"VP Sales","Microsoft",Redmond,WA,Yes,86,https://www.linkedin.com/in/james-gonzalez
+"Michael Johnson",mjohnson@microsoft.com,+1-966-1085-4628,"Sales Director","Microsoft",Redmond,WA,Yes,86,https://www.linkedin.com/in/michael-johnson
+"William Miller",wmiller@apple.com,+1-316-1039-8743,"Staff Engineer","Apple",Cupertino,CA,Yes,86,https://www.linkedin.com/in/william-miller
+"Joseph Wilson",joseph@apple.com,+1-1067-942-6160,"Engineering Manager","Apple",Cupertino,CA,Yes,86,https://www.linkedin.com/in/joseph-wilson
+"Sarah Thomas",sarah@meta.com,+1-1053-838-8169,"Product Manager","Meta",Menlo Park,CA,Yes,86,https://www.linkedin.com/in/sarah-thomas
+"Sarah Thomas",sthomas@meta.com,+1-907-1086-2695,"VP Sales","Meta",Menlo Park,CA,Yes,86,https://www.linkedin.com/in/sarah-thomas
+"Jennifer Jones",jennifer@amazon.com,+1-1024-417-8757,"VP Sales","Amazon",Seattle,WA,Yes,86,https://www.linkedin.com/in/jennifer-jones
+"Jane Smith",jane@amazon.com,+1-1075-1071-1045,"Engineering Manager","Amazon",Seattle,WA,Yes,86,https://www.linkedin.com/in/jane-smith
+"Jennifer Thomas",jthomas@tesla.com,+1-534-1084-4988,"CTO","Tesla",Austin,TX,Yes,86,https://www.linkedin.com/in/jennifer-thomas
+"John Lopez",jlopez@tesla.com,+1-1003-812-4179,"CEO","Tesla",Austin,TX,Yes,86,https://www.linkedin.com/in/john-lopez
+"Jennifer Hernandez",jennifer@tesla.com,+1-300-1024-6624,"Senior Engineer","Tesla",Austin,TX,Yes,86,https://www.linkedin.com/in/jennifer-hernandez
+"Richard Gonzalez",richard.gonzalez@openai.com,+1-1099-733-7141,"CTO","OpenAI",San Francisco,CA,Yes,86,https://www.linkedin.com/in/richard-gonzalez
+"David Gonzalez",david@openai.com,+1-721-1051-7027,"Staff Engineer","OpenAI",San Francisco,CA,Yes,86,https://www.linkedin.com/in/david-gonzalez
+"Sarah Thomas",sarah.thomas@stripe.com,+1-208-1009-8840,"CEO","Stripe",San Francisco,CA,Yes,86,https://www.linkedin.com/in/sarah-thomas
+"James Johnson",jjohnson@stripe.com,+1-558-1063-3878,"Senior Engineer","Stripe",San Francisco,CA,Yes,86,https://www.linkedin.com/in/james-johnson
+"John Williams",john@stripe.com,+1-1067-966-2591,"Staff Engineer","Stripe",San Francisco,CA,Yes,86,https://www.linkedin.com/in/john-williams
+"Emma Brown",emma@stripe.com,+1-1008-716-9295,"Sales Director","Stripe",San Francisco,CA,Yes,86,https://www.linkedin.com/in/emma-brown
+"Barbara Smith",barbara@github.com,+1-1096-799-7950,"CEO","GitHub",San Francisco,CA,Yes,86,https://www.linkedin.com/in/barbara-smith
+"Patricia Lopez",plopez@github.com,+1-1053-554-3242,"Senior Engineer","GitHub",San Francisco,CA,Yes,86,https://www.linkedin.com/in/patricia-lopez
+"Richard Martinez",richard@github.com,+1-1044-591-4663,"Product Manager","GitHub",San Francisco,CA,Yes,86,https://www.linkedin.com/in/richard-martinez
+"Joseph Davis",joseph@github.com,+1-929-1026-4425,"Senior Engineer","GitHub",San Francisco,CA,Yes,86,https://www.linkedin.com/in/joseph-davis
+"William Miller",wmiller@figma.com,+1-1008-675-6652,"VP Sales","Figma",San Francisco,CA,Yes,86,https://www.linkedin.com/in/william-miller
+"Maria Martinez",mmartinez@figma.com,+1-511-1059-9066,"CTO","Figma",San Francisco,CA,Yes,86,https://www.linkedin.com/in/maria-martinez
