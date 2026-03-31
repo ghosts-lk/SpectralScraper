@@ -12,6 +12,10 @@ export * from './core/lead-scorer';
 export * from './enrichment/enrichment-service';
 export * from './scrapers/html-scraper';
 export * from './scrapers/browser-scraper';
+export * from './scrapers/job-board-scraper';
+export * from './scrapers/directory-scraper';
+export * from './scrapers/github-scraper';
+export * from './scrapers/email-finder-scraper';
 export * from './utils/logger';
 export * from './utils/compliance';
 
@@ -19,6 +23,10 @@ import { SpectralEngine } from './core/engine';
 import { EnrichmentService } from './enrichment/enrichment-service';
 import { HtmlScraper } from './scrapers/html-scraper';
 import { BrowserScraper as _BrowserScraper } from './scrapers/browser-scraper';
+import { JobBoardScraper } from './scrapers/job-board-scraper';
+import { DirectoryScraper } from './scrapers/directory-scraper';
+import { GitHubScraper } from './scrapers/github-scraper';
+import { EmailFinderScraper } from './scrapers/email-finder-scraper';
 import { getLogger } from './utils/logger';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -30,7 +38,7 @@ import {
   LeadQuery,
   ScraperSource,
   Lead,
-} from './types/index.js';
+} from './types/index';
 
 export class SpectralScraper {
   private engine: SpectralEngine;
@@ -81,10 +89,27 @@ export class SpectralScraper {
    * Register default scrapers
    */
   private registerDefaultScrapers(): void {
+    // Company website scraper
     const htmlScraper = new HtmlScraper(ScraperSource.COMPANY_WEBSITE, this.logger);
     this.engine.registerScraper(ScraperSource.COMPANY_WEBSITE, htmlScraper);
 
-    this.logger.info('Registered default scrapers');
+    // Job board scraper (Indeed, LinkedIn Jobs, Glassdoor)
+    const jobBoardScraper = new JobBoardScraper(ScraperSource.JOB_BOARD, this.logger);
+    this.engine.registerScraper(ScraperSource.JOB_BOARD, jobBoardScraper);
+
+    // Business directory scraper (Crunchbase, AngelList, LinkedIn Companies, Yellow Pages)
+    const directoryScraper = new DirectoryScraper(ScraperSource.DIRECTORY, this.logger);
+    this.engine.registerScraper(ScraperSource.DIRECTORY, directoryScraper);
+
+    // GitHub scraper (users, organizations, developers)
+    const githubScraper = new GitHubScraper(ScraperSource.GITHUB, this.logger);
+    this.engine.registerScraper(ScraperSource.GITHUB, githubScraper);
+
+    // Email finder scraper (pattern matching + website scraping)
+    const emailFinderScraper = new EmailFinderScraper(ScraperSource.EMAIL_FINDER, this.logger);
+    this.engine.registerScraper(ScraperSource.EMAIL_FINDER, emailFinderScraper);
+
+    this.logger.info('Registered all default scrapers (HTML, Job Boards, Directories, GitHub, Email Finder)');
   }
 
   /**
@@ -203,7 +228,7 @@ export async function exportLeadsToCSV(leads: Lead[], filename: string = 'leads.
   return filepath;
 }
 
-// Quick-start example - Comprehensive lead scraping and enrichment
+// Quick-start example - REAL Lead scraping from verified sources
 export async function quickStart() {
   const scraper = new SpectralScraper({
     enrichment: {
@@ -212,35 +237,31 @@ export async function quickStart() {
       enrichWithSocial: true,
       enrichWithCompanyData: true,
       enrichWithPhoneData: true,
-      maxParallelRequests: 10,
+      maxParallelRequests: 5,
       scoreThreshold: 20,
     },
   });
 
   // Define comprehensive query
   const query: LeadQuery = {
-    company: 'Tech Startups',
-    location: 'Worldwide',
-    limit: 50,
-    title: 'CEO|Founder|CTO',
-    industry: 'Software',
+    company: 'Technology',
+    location: 'Sri Lanka',
+    limit: 100,
+    title: 'CEO|Founder|CTO|Software Engineer',
+    industry: 'Technology',
   };
 
-  // Use ALL available sources for comprehensive scraping
-  const allSources = [
-    ScraperSource.LINKEDIN,
-    ScraperSource.GOOGLE,
+  // Use REAL sources only (no paid APIs, no auth required)
+  const realSources = [
     ScraperSource.COMPANY_WEBSITE,
-    ScraperSource.HUNTER_IO,
-    ScraperSource.CLEARBIT,
+    ScraperSource.JOB_BOARD,
     ScraperSource.DIRECTORY,
     ScraperSource.GITHUB,
     ScraperSource.EMAIL_FINDER,
-    ScraperSource.JOB_BOARD,
   ];
 
-  console.log('\n🔍 Starting comprehensive lead scraping...\n');
-  const leads = await scraper.scrape(query, allSources);
+  console.log('\n🔍 Starting REAL lead scraping from verified sources...\n');
+  const leads = await scraper.scrape(query, realSources);
   
   // Enrich each lead with additional data
   console.log(`\n✅ Found ${leads.length} leads, enriching...\n`);

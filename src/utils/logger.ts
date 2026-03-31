@@ -32,7 +32,26 @@ export const logger = winston.createLogger({
       format: winston.format.combine(
         winston.format.colorize(),
         winston.format.printf(({ level, message, timestamp, ...meta }) => {
-          const metaStr = Object.keys(meta).length ? JSON.stringify(meta, null, 2) : '';
+          // Safe stringify that handles circular references
+          const safeStringify = (obj: any) => {
+            const seen = new WeakSet();
+            return JSON.stringify(obj, (key, value) => {
+              // Skip circular references
+              if (typeof value === 'object' && value !== null) {
+                if (seen.has(value)) return '[Circular]';
+                try {
+                  seen.add(value);
+                } catch {
+                  return '[Object]';
+                }
+              }
+              // Skip large objects
+              if (key === 'config' || key === 'data' || key === 'response') return '[Omitted]';
+              return value;
+            }, 2);
+          };
+
+          const metaStr = Object.keys(meta).length ? safeStringify(meta) : '';
           return `${timestamp} [${level}]: ${message} ${metaStr}`;
         })
       ),
